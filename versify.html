@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poetry Memorizer</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: serif;
+        }
+        button {
+            padding: 8px 12px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #e0e0e0;
+        }
+        .poem {
+            font-family: serif;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .poem-line {
+            margin-bottom: 8px;
+        }
+        .revealed {
+            color: green;
+        }
+        .hint {
+            color: #666;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .author {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="input-row">
+                <input type="text" id="input" placeholder="Type the current line..." disabled>
+                <button id="loadButton" title="Load poem">📁</button>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <input type="checkbox" id="showDots" checked>
+                    <label for="showDots">Show dots for letters</label>
+                </div>
+                <div class="control-group">
+                    <label for="hintDelay">Hint Delay (sec)</label>
+                    <select id="hintDelay">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div id="poemContent">
+                Click on the folder icon to load a poem
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" accept=".md,.txt" style="display: none">
+
+    <script>
+        class PoetryMemorizer {
+            constructor() {
+                this.input = document.getElementById('input');
+                this.poemContent = document.getElementById('poemContent');
+                this.fileInput = document.getElementById('fileInput');
+                this.loadButton = document.getElementById('loadButton');
+                this.showDotsCheckbox = document.getElementById('showDots');
+                this.hintDelaySelect = document.getElementById('hintDelay');
+
+                this.poem = null;
+                this.currentLine = 0;
+                this.revealedLines = new Set();
+                this.lastInputTime = Date.now();
+                this.hintTimer = null;
+                this.isComplete = false;
+
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.loadButton.addEventListener('click', () => this.fileInput.click());
+                this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                this.input.addEventListener('input', (e) => this.handleInput(e));
+                this.showDotsCheckbox.addEventListener('change', () => this.renderPoem());
+                this.hintDelaySelect.addEventListener('change', () => this.resetHintTimer());
+            }
+
+            async handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const text = await file.text();
+                this.loadPoem(text);
+                this.fileInput.value = ''; // Reset file input
+            }
+
+            loadPoem(markdown) {
+                const lines = markdown.split('\n').filter(line => line.trim());
+                this.poem = {
+                    title: lines[0].replace('## ', ''),
+                    author: lines[1].replace('by ', '').replace(/\*/g, ''),
+                    lines: lines.slice(2).map(line => line.trimEnd())
+                };
+
+                this.currentLine = 0;
+                this.revealedLines = new Set();
+                this.input.value = '';
+                this.input.disabled = false;
+                this.isComplete = false;
+                this.lastInputTime = Date.now();
+                this.renderPoem();
+            }
+
+            cleanText(text) {
+                return text.toLowerCase().replace(/[^\w\s]/g, '');
+            }
+
+            handleInput(event) {
+                if (this.isComplete) return;
+
+                const currentPoemLine = this.poem.lines[this.currentLine];
+                const userInput = event.target.value;
+                
+                // Check if line is complete
+                if (this.cleanText(userInput) === this.cleanText(currentPoemLine)) {
+                    this.revealedLines.add(this.currentLine);
+                    
+                    if (this.currentLine === this.poem.lines.length - 1) {
+                        this.isComplete = true;
+                        this.input.disabled = true;
+                    } else {
+                        this.currentLine++;
+                        this.input.value = '';
+                    }
+                }
+
+                this.lastInputTime = Date.now();
+                this.resetHintTimer();
+                this.renderPoem();
+            }
+
+            resetHintTimer() {
+                if (this.hintTimer) clearTimeout(this.hintTimer);
+                this.hintTimer = setTimeout(() => {
+                    this.renderPoem(true);
+                }, this.hintDelaySelect.value * 1000);
+            }
+
+            renderPoem(showHint = false) {
+                if (!this.poem) {
+                    this.poemContent.textContent = 'Click on the folder icon to load a poem';
+                    return;
+                }
+
+                const progress = (this.revealedLines.size / this.poem.lines.length) * 100;
+                let html = `
+                    <div class="title">${this.poem.title}</div>
+                    <div class="author">${this.poem.author}</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="progress-text">${Math.round(progress)}% completed</div>
+                    <div class="poem">
+                `;
+
+                this.poem.lines.forEach((line, index) => {
+                    if (this.isComplete) {
+                        html += `<div class="poem-line">${line}</div>`;
+                        return;
+                    }
+
+                    if (this.revealedLines.has(index)) {
+                        html += `<div class="poem-line revealed">${line}</div>`;
+                        return;
+                    }
+
+                    let displayLine = '';
+                    const userInput = index === this.currentLine ? this.input.value : '';
+                    const showDots = this.showDotsCheckbox.checked;
+                    let foundUntyped = false;
+
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        if (index === this.currentLine) {
+                            if (i < userInput.length && 
+                                this.cleanText(userInput[i]) === this.cleanText(char)) {
+                                displayLine += char;
+                            } else if (!foundUntyped && showHint && char.match(/[a-zA-Z]/)) {
+                                displayLine += `<span class="hint">${char}</span>`;
+                                foundUntyped = true;
+                            } else {
+                                displayLine += char === ' ' ? ' ' : (showDots ? '.' : ' ');
+                                foundUntyped = true;
+                            }
+                        } else {
+                            displayLine += char === ' ' ? ' ' : (showDots ? '.' : ' ');
+                        }
+                    }
+
+                    html += `<div class="poem-line">${displayLine}</div>`;
+                });
+
+                html += '</div>';
+                this.poemContent.innerHTML = html;
+            }
+        }
+
+        // Initialize the app
+        new PoetryMemorizer();
+    </script>
+</body>
+</html>
