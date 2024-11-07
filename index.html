@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -129,13 +128,13 @@
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="card">
             <div class="input-row">
                 <input type="text" id="input" placeholder="Type the current line..." disabled>
                 <button id="loadButton" title="Load poem">📁</button>
+                <button id="resetButton" title="Reset current poem">🔄</button>
             </div>
             <div class="controls">
                 <div class="control-group">
@@ -172,10 +171,12 @@
                 this.poemContent = document.getElementById('poemContent');
                 this.fileInput = document.getElementById('fileInput');
                 this.loadButton = document.getElementById('loadButton');
+                this.resetButton = document.getElementById('resetButton');
                 this.showDotsCheckbox = document.getElementById('showDots');
                 this.hintDelaySelect = document.getElementById('hintDelay');
 
                 this.poem = null;
+                this.currentPoemText = null;
                 this.currentLine = 0;
                 this.revealedLines = new Set();
                 this.lastInputTime = Date.now();
@@ -187,6 +188,7 @@
 
             setupEventListeners() {
                 this.loadButton.addEventListener('click', () => this.fileInput.click());
+                this.resetButton.addEventListener('click', () => this.resetPoem());
                 this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
                 this.input.addEventListener('input', (e) => this.handleInput(e));
                 this.showDotsCheckbox.addEventListener('change', () => this.renderPoem());
@@ -198,15 +200,22 @@
                 if (!file) return;
 
                 const text = await file.text();
+                this.currentPoemText = text;
                 this.loadPoem(text);
-                this.fileInput.value = ''; // Reset file input
+                this.fileInput.value = '';
+            }
+
+            resetPoem() {
+                if (this.currentPoemText) {
+                    this.loadPoem(this.currentPoemText);
+                }
             }
 
             loadPoem(markdown) {
                 const lines = markdown.split('\n').filter(line => line.trim());
                 this.poem = {
-                    title: lines[0].replace('## ', ''),
-                    author: lines[1].replace('by ', '').replace(/\*/g, ''),
+                    title: lines[0].replace(/#+\s/, ''),
+                    author: lines[1].replace(/by\s/i, '').replace(/\*/g, ''),
                     lines: lines.slice(2).map(line => line.trimEnd())
                 };
 
@@ -220,7 +229,7 @@
             }
 
             cleanText(text) {
-                return text.toLowerCase().replace(/[^\w\s]/g, '');
+                return text.trim().toLowerCase().replace(/[^\w\s]/g, '');
             }
 
             handleInput(event) {
@@ -229,8 +238,10 @@
                 const currentPoemLine = this.poem.lines[this.currentLine];
                 const userInput = event.target.value;
 
-                // Check if line is complete
-                if (this.cleanText(userInput) === this.cleanText(currentPoemLine)) {
+                const cleanedPoemLine = this.cleanText(currentPoemLine);
+                const cleanedUserInput = this.cleanText(userInput);
+
+                if (cleanedUserInput === cleanedPoemLine) {
                     this.revealedLines.add(this.currentLine);
 
                     if (this.currentLine === this.poem.lines.length - 1) {
@@ -268,7 +279,7 @@
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progress}%"></div>
                         </div>
-                        <div class="progress-text">${Math.round(progress)}% completed</div>
+                        <div class="progress-text">${Math.round(progress)}%</div>
                     </div>
                     <div class="poem">
                 `;
@@ -287,22 +298,41 @@
                     let displayLine = '';
                     const userInput = index === this.currentLine ? this.input.value : '';
                     const showDots = this.showDotsCheckbox.checked;
-                    let foundUntyped = false;
 
-                    for (let i = 0; i < line.length; i++) {
-                        const char = line[i];
-                        if (index === this.currentLine) {
-                            if (i < userInput.length &&
-                                this.cleanText(userInput[i]) === this.cleanText(char)) {
+                    if (index === this.currentLine) {
+                        // Create cleaned versions for matching
+                        const cleanedLine = this.cleanText(line);
+                        const cleanedInput = this.cleanText(userInput);
+                        
+                        // Track position in cleaned input
+                        let cleanPos = 0;
+                        let foundUntyped = false;
+
+                        // Go through each character in the original line
+                        for (let i = 0; i < line.length; i++) {
+                            const char = line[i];
+                            const cleanedChar = char.toLowerCase().replace(/[^\w\s]/g, '');
+
+                            if (!cleanedChar) {
+                                // If it's punctuation or other non-word character, show it
                                 displayLine += char;
+                            } else if (cleanPos < cleanedInput.length && 
+                                     cleanedChar === cleanedInput[cleanPos]) {
+                                // Character matches at current clean position
+                                displayLine += char;
+                                cleanPos++;
                             } else if (!foundUntyped && showHint && char.match(/[a-zA-Z]/)) {
+                                // Show hint for first untyped character
                                 displayLine += `<span class="hint">${char}</span>`;
                                 foundUntyped = true;
                             } else {
+                                // Show dot or space for unmatched character
                                 displayLine += char === ' ' ? ' ' : (showDots ? '.' : ' ');
-                                foundUntyped = true;
                             }
-                        } else {
+                        }
+                    } else {
+                        // For non-current lines, just show dots or spaces
+                        for (const char of line) {
                             displayLine += char === ' ' ? ' ' : (showDots ? '.' : ' ');
                         }
                     }
@@ -319,5 +349,4 @@
         new PoetryMemorizer();
     </script>
 </body>
-
 </html>
