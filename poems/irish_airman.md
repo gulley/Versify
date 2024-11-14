@@ -1,4 +1,4 @@
-# An Irish Airman foresees his Death
+# An Irish Airman Foresees His Death
 *By William Butler Yeats*
 
 I know that I shall meet my fate
