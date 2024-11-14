@@ -1,179 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Head content -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poetry Memorizer</title>
+    <title>Versify</title>
+    <!-- Material Design Lite CSS with blue-amber theme -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-amber.min.css" />
+    <!-- Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Dialog Polyfill CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Merriweather&family=Roboto+Mono&family=Source+Code+Pro&family=Inconsolata&family=Ubuntu+Mono&family=Fira+Mono&display=swap" rel="stylesheet">
+
     <style>
+        /* Updated styles */
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: "Roboto", system-ui, -apple-system, sans-serif;
             margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
+            padding: 0;
+            background: #f0f0f0;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        body.completed {
+            background-color: #333;
+            color: #999;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
-        }
-
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-bottom: 20px;
         }
 
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
+        .input-card {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 20px; /* Space below the nav bar */
+            z-index: 10;
+        }
+
+        .mdl-card {
+            width: 100%;
+            min-height: 0;
+            margin-bottom: 20px;
+            background-color: #fff; /* Cards always light-colored */
+            color: #000;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        .mdl-card__supporting-text {
+            width: calc(100% - 32px);
         }
 
         .input-row {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
+            align-items: center;
         }
 
-        input[type="text"] {
+        .input-field {
             flex-grow: 1;
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: sans-serif;
-        }
-
-        button {
-            padding: 8px 12px;
-            border: none;
-            background: #f0f0f0;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #e0e0e0;
         }
 
         .poem {
-            font-family: sans-serif;
             font-size: 18px;
             line-height: 1.6;
         }
 
         .poem-line {
             margin-bottom: 8px;
+            color: inherit;
         }
 
         .revealed {
-            color: green;
+            color: #4CAF50;
         }
 
         .hint {
-            color: #666;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #eee;
-            border-radius: 4px;
-            margin: 10px 0;
+            color: #E91E63; /* Pink */
         }
 
         .progress-bar-container {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin: 10px 0;
         }
 
         .progress-text {
-            margin-left: auto;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #4CAF50;
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        select {
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+            display: none; /* Hide percent progress number */
         }
 
         .title {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 5px;
+            color: inherit;
         }
 
         .author {
             font-style: italic;
-            color: #666;
+            color: inherit;
             margin-bottom: 20px;
+        }
+
+        /* Styles for the modal dialog */
+        .mdl-dialog {
+            width: 400px;
+        }
+
+        /* Adjustments for fixed header */
+        .mdl-layout__header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .mdl-layout__content {
+            margin-top: 64px; /* Height of the header */
+        }
+
+        @media (min-width: 0px) and (max-width: 479px) {
+            .mdl-layout__content {
+                margin-top: 56px; /* Adjust for smaller screens */
+            }
+            .input-card {
+                top: 16px; /* Slightly less space for small screens */
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="input-row">
-                <input type="text" id="input" placeholder="Type the current line..." disabled>
-                <button id="loadButton" title="Load poem">📁</button>
-                <button id="resetButton" title="Reset current poem">🔄</button>
+    <!-- Navigation Bar -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header mdl-color--primary">
+            <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title">Versify</span>
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation">
+                    <button id="loadButton" class="mdl-button mdl-js-button mdl-button--icon" title="Load Poem">
+                        <i class="material-icons mdl-color-text--white">folder_open</i>
+                    </button>
+                    <button id="resetButton" class="mdl-button mdl-js-button mdl-button--icon" title="Reset Poem">
+                        <i class="material-icons mdl-color-text--white">refresh</i>
+                    </button>
+                    <button id="settingsButton" class="mdl-button mdl-js-button mdl-button--icon" title="Settings">
+                        <i class="material-icons mdl-color-text--white">settings</i>
+                    </button>
+                </nav>
             </div>
-            <div class="controls">
-                <div class="control-group">
-                    <input type="checkbox" id="showDots" checked>
-                    <label for="showDots">Show dots for letters</label>
-                </div>
-                <div class="control-group">
-                    <label for="hintDelay">Hint Delay (sec)</label>
-                    <select id="hintDelay">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3" selected>3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+        </header>
 
-        <div class="card">
-            <div id="poemContent">
-                Click on the folder icon to load a poem
+        <!-- Main Content -->
+        <main class="mdl-layout__content">
+            <div class="container">
+                <div class="mdl-card mdl-shadow--2dp input-card">
+                    <div class="mdl-card__supporting-text">
+                        <div class="input-row">
+                            <div class="input-field mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input" type="text" id="input" disabled>
+                                <label class="mdl-textfield__label" for="input">Type the current line...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__supporting-text">
+                        <div id="poemContent">
+                            Click on the folder icon to load a poem
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
+    <!-- Hidden File Input -->
     <input type="file" id="fileInput" accept=".md,.txt" style="display: none">
 
+    <!-- Settings Modal -->
+    <dialog class="mdl-dialog">
+        <h4 class="mdl-dialog__title">Settings</h4>
+        <div class="mdl-dialog__content">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="showDots">
+                <input type="checkbox" id="showDots" class="mdl-checkbox__input">
+                <span class="mdl-checkbox__label">Show dots for letters</span>
+            </label>
+            <br><br>
+            <label for="hintDelaySlider">Hint Delay (sec): <span id="hintDelayValue">3</span></label>
+            <input type="range" id="hintDelaySlider" min="0" max="5" value="3" step="0.1">
+            <br><br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <select class="mdl-textfield__input" id="fontSelect">
+                    <optgroup label="Proportional Fonts">
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Open Sans', sans-serif">Open Sans</option>
+                        <option value="'Lato', sans-serif">Lato</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Merriweather', serif">Merriweather</option>
+                    </optgroup>
+                    <optgroup label="Monospace Fonts">
+                        <option value="'Roboto Mono', monospace">Roboto Mono</option>
+                        <option value="'Source Code Pro', monospace">Source Code Pro</option>
+                        <option value="'Inconsolata', monospace">Inconsolata</option>
+                        <option value="'Ubuntu Mono', monospace">Ubuntu Mono</option>
+                        <option value="'Fira Mono', monospace">Fira Mono</option>
+                    </optgroup>
+                </select>
+                <label class="mdl-textfield__label" for="fontSelect">Select Font</label>
+            </div>
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button close">Close</button>
+        </div>
+    </dialog>
+
+    <!-- Scripts -->
+    <!-- Material Design Lite JS -->
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <!-- Dialog Polyfill JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.js"></script>
     <script>
-        class PoetryMemorizer {
+        class Versify {
             constructor() {
                 this.input = document.getElementById('input');
                 this.poemContent = document.getElementById('poemContent');
                 this.fileInput = document.getElementById('fileInput');
                 this.loadButton = document.getElementById('loadButton');
                 this.resetButton = document.getElementById('resetButton');
+                this.settingsButton = document.getElementById('settingsButton');
                 this.showDotsCheckbox = document.getElementById('showDots');
-                this.hintDelaySelect = document.getElementById('hintDelay');
+                this.hintDelaySlider = document.getElementById('hintDelaySlider');
+                this.hintDelayValue = document.getElementById('hintDelayValue');
+                this.fontSelect = document.getElementById('fontSelect');
+                this.dialog = document.querySelector('dialog');
+                this.dialogCloseButton = this.dialog.querySelector('.close');
+
+                if (!this.dialog.showModal) {
+                    dialogPolyfill.registerDialog(this.dialog);
+                }
 
                 this.poem = null;
                 this.currentPoemText = null;
@@ -183,16 +254,94 @@
                 this.hintTimer = null;
                 this.isComplete = false;
 
+                this.loadSettings();
                 this.setupEventListeners();
             }
 
             setupEventListeners() {
+                // Load, reset, and settings buttons
                 this.loadButton.addEventListener('click', () => this.fileInput.click());
                 this.resetButton.addEventListener('click', () => this.resetPoem());
+                this.settingsButton.addEventListener('click', () => this.dialog.showModal());
+
+                // Settings dialog close
+                this.dialogCloseButton.addEventListener('click', () => {
+                    this.dialog.close();
+                    this.saveSettings();
+                    this.applyFont();
+                    this.renderPoem();
+                });
+
+                // File input
                 this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+
+                // Input field
                 this.input.addEventListener('input', (e) => this.handleInput(e));
+
+                // Show dots checkbox
                 this.showDotsCheckbox.addEventListener('change', () => this.renderPoem());
-                this.hintDelaySelect.addEventListener('change', () => this.resetHintTimer());
+
+                // Hint delay slider
+                this.hintDelaySlider.addEventListener('input', () => {
+                    this.hintDelayValue.textContent = this.hintDelaySlider.value;
+                    this.resetHintTimer();
+                });
+
+                // Font select
+                this.fontSelect.addEventListener('change', () => this.applyFont());
+
+                // Slash key focus
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === '/') {
+                        // Focus the input field if slash key is pressed
+                        if (document.activeElement !== this.input) {
+                            e.preventDefault();
+                            this.input.focus();
+                        }
+                    }
+                });
+
+                // Prevent wrong letters from appearing
+                this.input.addEventListener('keydown', (e) => this.preventWrongLetter(e));
+            }
+
+            loadSettings() {
+                const showDots = localStorage.getItem('showDots');
+                const hintDelay = localStorage.getItem('hintDelay');
+                const selectedFont = localStorage.getItem('selectedFont');
+
+                if (showDots !== null) {
+                    this.showDotsCheckbox.checked = JSON.parse(showDots);
+                } else {
+                    this.showDotsCheckbox.checked = true;
+                }
+
+                if (hintDelay !== null) {
+                    this.hintDelaySlider.value = hintDelay;
+                    this.hintDelayValue.textContent = hintDelay;
+                } else {
+                    this.hintDelaySlider.value = '3';
+                    this.hintDelayValue.textContent = '3';
+                }
+
+                if (selectedFont !== null) {
+                    this.fontSelect.value = selectedFont;
+                } else {
+                    this.fontSelect.value = "'Roboto', sans-serif";
+                }
+
+                this.applyFont();
+            }
+
+            saveSettings() {
+                localStorage.setItem('showDots', this.showDotsCheckbox.checked);
+                localStorage.setItem('hintDelay', this.hintDelaySlider.value);
+                localStorage.setItem('selectedFont', this.fontSelect.value);
+            }
+
+            applyFont() {
+                const selectedFont = this.fontSelect.value;
+                document.body.style.fontFamily = selectedFont;
             }
 
             async handleFileSelect(event) {
@@ -226,6 +375,10 @@
                 this.isComplete = false;
                 this.lastInputTime = Date.now();
                 this.renderPoem();
+                document.body.classList.remove('completed');
+
+                // Update MDL textfield state
+                this.input.parentElement.classList.add('is-dirty');
             }
 
             cleanText(text) {
@@ -247,6 +400,7 @@
                     if (this.currentLine === this.poem.lines.length - 1) {
                         this.isComplete = true;
                         this.input.disabled = true;
+                        document.body.classList.add('completed');
                     } else {
                         this.currentLine++;
                         this.input.value = '';
@@ -258,11 +412,83 @@
                 this.renderPoem();
             }
 
+            preventWrongLetter(event) {
+                if (this.isComplete) return;
+
+                // Check if user pressed a key that can modify input
+                const { key, ctrlKey, altKey, metaKey } = event;
+                if (ctrlKey || altKey || metaKey) {
+                    // Allow system or command shortcuts
+                    return;
+                }
+
+                // Special keys allowed:
+                const allowedKeys = ['Backspace', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+                if (allowedKeys.includes(key)) {
+                    return;
+                }
+
+                // If slash key is pressed and input is in focus, allow if it's the correct next letter
+                if (key === '/') {
+                    const nextLetter = this.getNextLetter();
+                    if (nextLetter !== '/') {
+                        // Slash is not the next letter, prevent default
+                        event.preventDefault();
+                        return;
+                    } else {
+                        // Slash is the next letter
+                        return;
+                    }
+                }
+
+                // If user typed a character:
+                if (key.length === 1) {
+                    const nextLetter = this.getNextLetter();
+                    // If there's no next letter (end of line or poem complete), prevent
+                    if (!nextLetter) {
+                        event.preventDefault();
+                        return;
+                    }
+                    // Compare ignoring case if letter is alphabetical
+                    if (/[a-z]/i.test(nextLetter)) {
+                        // Next letter is alphabetical
+                        if (key.toLowerCase() !== nextLetter.toLowerCase()) {
+                            // Wrong letter
+                            event.preventDefault();
+                            return;
+                        }
+                    } else {
+                        // Next letter is punctuation or space
+                        if (key !== nextLetter) {
+                            // Wrong character
+                            event.preventDefault();
+                            return;
+                        }
+                    }
+                } else {
+                    // Any other key press that modifies input (like Shift, etc.) 
+                    // We'll allow it
+                }
+            }
+
+            getNextLetter() {
+                if (!this.poem) return null;
+                if (this.isComplete) return null;
+
+                const currentPoemLine = this.poem.lines[this.currentLine];
+                const currentInput = this.input.value;
+                return currentPoemLine.charAt(currentInput.length);
+            }
+
             resetHintTimer() {
                 if (this.hintTimer) clearTimeout(this.hintTimer);
-                this.hintTimer = setTimeout(() => {
+                if (this.hintDelaySlider.value > 0) {
+                    this.hintTimer = setTimeout(() => {
+                        this.renderPoem(true);
+                    }, this.hintDelaySlider.value * 1000);
+                } else {
                     this.renderPoem(true);
-                }, this.hintDelaySelect.value * 1000);
+                }
             }
 
             renderPoem(showHint = false) {
@@ -276,10 +502,7 @@
                     <div class="title">${this.poem.title}</div>
                     <div class="author">${this.poem.author}</div>
                     <div class="progress-bar-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progress}%"></div>
-                        </div>
-                        <div class="progress-text">${Math.round(progress)}%</div>
+                        <div class="mdl-progress mdl-js-progress" style="width: 100%"></div>
                     </div>
                     <div class="poem">
                 `;
@@ -300,38 +523,29 @@
                     const showDots = this.showDotsCheckbox.checked;
 
                     if (index === this.currentLine) {
-                        // Create cleaned versions for matching
                         const cleanedLine = this.cleanText(line);
                         const cleanedInput = this.cleanText(userInput);
-                        
-                        // Track position in cleaned input
                         let cleanPos = 0;
                         let foundUntyped = false;
 
-                        // Go through each character in the original line
                         for (let i = 0; i < line.length; i++) {
                             const char = line[i];
                             const cleanedChar = char.toLowerCase().replace(/[^\w\s]/g, '');
 
                             if (!cleanedChar) {
-                                // If it's punctuation or other non-word character, show it
                                 displayLine += char;
-                            } else if (cleanPos < cleanedInput.length && 
-                                     cleanedChar === cleanedInput[cleanPos]) {
-                                // Character matches at current clean position
+                            } else if (cleanPos < cleanedInput.length &&
+                                    cleanedChar === cleanedInput[cleanPos]) {
                                 displayLine += char;
                                 cleanPos++;
                             } else if (!foundUntyped && showHint && char.match(/[a-zA-Z]/)) {
-                                // Show hint for first untyped character
                                 displayLine += `<span class="hint">${char}</span>`;
                                 foundUntyped = true;
                             } else {
-                                // Show dot or space for unmatched character
                                 displayLine += char === ' ' ? ' ' : (showDots ? '.' : ' ');
                             }
                         }
                     } else {
-                        // For non-current lines, just show dots or spaces
                         for (const char of line) {
                             displayLine += char === ' ' ? ' ' : (showDots ? '.' : ' ');
                         }
@@ -342,11 +556,21 @@
 
                 html += '</div>';
                 this.poemContent.innerHTML = html;
+
+                // Initialize MDL progress bar
+                const progressBar = this.poemContent.querySelector('.mdl-progress');
+                if (progressBar) {
+                    componentHandler.upgradeElement(progressBar);
+                    progressBar.MaterialProgress.setProgress(progress);
+                }
             }
         }
 
-        // Initialize the app
-        new PoetryMemorizer();
+        // Initialize the app when the DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            componentHandler.upgradeAllRegistered();
+            new Versify();
+        });
     </script>
 </body>
 </html>
