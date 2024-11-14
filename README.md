@@ -8,7 +8,6 @@ https://gulley.github.io/Versify/
 - Don't make me type in punctuation marks. Fill them in for me. 
 - Bug: Settings Hint delay time slider is not smooth
 - Completion slider should go in the text input area
-
 - Make it optional to show the original clear text on the side. With associated settings option checkbox. Default value is false.
 - Make sure the line being filled in is always visible on the screen
 - Bug: typing the wrong letter can trigger a look-ahead for that letter somewhere in the poem
