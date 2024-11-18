@@ -6,7 +6,9 @@ https://gulley.github.io/Versify/
 
 ## To do
 - Don't make me type in punctuation marks. Fill them in for me. 
+- Handle scrolling to keep the display area insertion point in view.
 - Bug: Settings Hint delay time slider is not smooth
+- The text input area should use the same font as the poem
 - Completion slider should go in the text input area
 - Make it optional to show the original clear text on the side. With associated settings option checkbox. Default value is false.
 - Make sure the line being filled in is always visible on the screen
@@ -29,3 +31,9 @@ https://gulley.github.io/Versify/
 - Hint letter should be a different color. Maybe pink.
 - Get tooltips for icons
 - Get rid of percent progress number
+
+## Poems and Speeches to Add
+- Midsummer Night's Dream closing speech
+- Henry V, Band of Brothers speech
+- Crossing the Bar
+- Gettysburg Address
