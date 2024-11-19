@@ -327,29 +327,20 @@ Nothing gold can stay.
             }
 
             loadSettings() {
+                // Default settings
+                const defaultShowDots = true;
+                const defaultHintDelay = 2;
+                const defaultFont = "'Inconsolata', monospace";
+
+                // Load settings or use defaults
                 const showDots = localStorage.getItem('showDots');
                 const hintDelay = localStorage.getItem('hintDelay');
                 const selectedFont = localStorage.getItem('selectedFont');
 
-                if (showDots !== null) {
-                    this.showDotsCheckbox.checked = JSON.parse(showDots);
-                } else {
-                    this.showDotsCheckbox.checked = true;
-                }
-
-                if (hintDelay !== null) {
-                    this.hintDelaySlider.value = hintDelay;
-                    this.hintDelayValue.textContent = hintDelay;
-                } else {
-                    this.hintDelaySlider.value = '3';
-                    this.hintDelayValue.textContent = '3';
-                }
-
-                if (selectedFont !== null) {
-                    this.fontSelect.value = selectedFont;
-                } else {
-                    this.fontSelect.value = "'Roboto', sans-serif";
-                }
+                this.showDotsCheckbox.checked = showDots !== null ? JSON.parse(showDots) : defaultShowDots;
+                this.hintDelaySlider.value = hintDelay !== null ? hintDelay : defaultHintDelay;
+                this.hintDelayValue.textContent = this.hintDelaySlider.value;
+                this.fontSelect.value = selectedFont !== null ? selectedFont : defaultFont;
 
                 this.applyFont();
             }
