@@ -227,36 +227,57 @@
     <!-- Dialog Polyfill JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.js"></script>
     <script>
-        class Versify {
-            constructor() {
-                this.input = document.getElementById('input');
-                this.poemContent = document.getElementById('poemContent');
-                this.fileInput = document.getElementById('fileInput');
-                this.loadButton = document.getElementById('loadButton');
-                this.resetButton = document.getElementById('resetButton');
-                this.settingsButton = document.getElementById('settingsButton');
-                this.showDotsCheckbox = document.getElementById('showDots');
-                this.hintDelaySlider = document.getElementById('hintDelaySlider');
-                this.hintDelayValue = document.getElementById('hintDelayValue');
-                this.fontSelect = document.getElementById('fontSelect');
-                this.dialog = document.querySelector('dialog');
-                this.dialogCloseButton = this.dialog.querySelector('.close');
 
-                if (!this.dialog.showModal) {
-                    dialogPolyfill.registerDialog(this.dialog);
-                }
+class Versify {
+    constructor() {
+        this.input = document.getElementById('input');
+        this.poemContent = document.getElementById('poemContent');
+        this.fileInput = document.getElementById('fileInput');
+        this.loadButton = document.getElementById('loadButton');
+        this.resetButton = document.getElementById('resetButton');
+        this.settingsButton = document.getElementById('settingsButton');
+        this.showDotsCheckbox = document.getElementById('showDots');
+        this.hintDelaySlider = document.getElementById('hintDelaySlider');
+        this.hintDelayValue = document.getElementById('hintDelayValue');
+        this.fontSelect = document.getElementById('fontSelect');
+        this.dialog = document.querySelector('dialog');
+        this.dialogCloseButton = this.dialog.querySelector('.close');
 
-                this.poem = null;
-                this.currentPoemText = null;
-                this.currentLine = 0;
-                this.revealedLines = new Set();
-                this.lastInputTime = Date.now();
-                this.hintTimer = null;
-                this.isComplete = false;
+        if (!this.dialog.showModal) {
+            dialogPolyfill.registerDialog(this.dialog);
+        }
 
-                this.loadSettings();
-                this.setupEventListeners();
-            }
+        this.poem = null;
+        this.currentPoemText = null;
+        this.currentLine = 0;
+        this.revealedLines = new Set();
+        this.lastInputTime = Date.now();
+        this.hintTimer = null;
+        this.isComplete = false;
+
+        // Load default poem
+        this.loadDefaultPoem();
+
+        this.loadSettings();
+        this.setupEventListeners();
+    }
+
+    loadDefaultPoem() {
+        const defaultPoem = `
+# Nothing Gold Can Stay
+*by Robert Frost*
+
+Nature's first green is gold,
+Her hardest hue to hold.
+Her early leaf's a flower;
+But only so an hour.
+Then leaf subsides to leaf.
+So Eden sank to grief,
+So dawn goes down to day.
+Nothing gold can stay.
+        `;
+        this.loadPoem(defaultPoem.trim());
+    }
 
             setupEventListeners() {
                 // Load, reset, and settings buttons
