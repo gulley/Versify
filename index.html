@@ -343,6 +343,9 @@ Nothing gold can stay.
                 this.fontSelect.value = selectedFont !== null ? selectedFont : defaultFont;
 
                 this.applyFont();
+
+                // Ensure dots are rendered if the default is true
+                this.renderPoem();
             }
 
             saveSettings() {
