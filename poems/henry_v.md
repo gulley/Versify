@@ -18,7 +18,7 @@ Within this wooden O the very casques
 That did affright the air at Agincourt?
 O pardon, since a crooked figure may
 Attest in little place a million,
-And let us, ciphers to this great account,
+And let us, ciphers to this great accompt,
 On your imaginary forces work.
 Suppose within the girdle of these walls
 Are now confined two mighty monarchies,
