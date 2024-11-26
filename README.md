@@ -6,6 +6,7 @@ https://gulley.github.io/Versify/
 
 ## To do
 - Don't make me type in punctuation marks. Fill them in for me. 
+- Text entry area should have the same font as the poem display area.
 - Handle scrolling to keep the display area insertion point in view.
 - Bug: Settings Hint delay time slider is not smooth
 - The text input area should use the same font as the poem
