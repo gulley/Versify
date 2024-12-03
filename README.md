@@ -5,18 +5,13 @@ I built this app with the help of Claude so that I can memorize poetry.
 https://gulley.github.io/Versify/
 
 ## To do
-- Don't make me type in punctuation marks. Fill them in for me. 
-- Text entry area should have the same font as the poem display area.
+- Don't make me type in punctuation marks. Fill them in for me.
+- Handle the blank lines between stanzas
 - Handle scrolling to keep the display area insertion point in view.
 - Bug: Settings Hint delay time slider is not smooth
-- The text input area should use the same font as the poem
 - Completion slider should go in the text input area
-- Make it optional to show the original clear text on the side. With associated settings option checkbox. Default value is false.
 - Make sure the line being filled in is always visible on the screen
-- Bug: typing the wrong letter can trigger a look-ahead for that letter somewhere in the poem
-- Bug: "tworoads" matches "two roads" when it shouldn't
 - Bug: State of "Show dots for letters" checkbox is often wrong when the settings dialog first opens
-- Put a "starter poem" in at initialization time
 - Add a timer
 - Record mistyped letters
 - Save time and mistypes
@@ -24,6 +19,11 @@ https://gulley.github.io/Versify/
 - Progress bar should represent progress at the character level, not just the line level
 
 ## Done
+- Text entry area should have the same font as the poem display area.
+- Make it optional to show the original clear text on the side. With associated settings option checkbox. Default value is false.
+- Bug: typing the wrong letter can trigger a look-ahead for that letter somewhere in the poem
+- Bug: "tworoads" matches "two roads" when it shouldn't
+- Put a "starter poem" in at initialization time
 - Bug: cards should always be light colored for readability contrast
 - Typing slash "/" should move focus to text input region
 - Settings: Hint delay time slider should honor increments of 0.1 sec
