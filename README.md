@@ -5,6 +5,7 @@ I built this app with the help of Claude so that I can memorize poetry.
 https://gulley.github.io/Versify/
 
 ## To do
+- Bug: problems with dashes, as in "Echoing behind us - listen". Can get into a locked state.
 - Don't make me type in punctuation marks. Fill them in for me.
 - Handle the blank lines between stanzas
 - Handle scrolling to keep the display area insertion point in view.
