@@ -5,6 +5,8 @@ I built this app with the help of Claude so that I can memorize poetry.
 https://gulley.github.io/Versify/
 
 ## To do
+
+- Bug: when I first open settings after loading the app, it doesn't reflect the state of the app. The dots are showing, but the Show Dots checkbox isn't set.
 - Bug: problems with dashes, as in "Echoing behind us - listen". Can get into a locked state.
 - Don't make me type in punctuation marks. Fill them in for me.
 - Handle the blank lines between stanzas
@@ -17,9 +19,9 @@ https://gulley.github.io/Versify/
 - Record mistyped letters
 - Save time and mistypes
 - Plot time and mistype progress for the same poem
-- Progress bar should represent progress at the character level, not just the line level
 
 ## Done
+- Bug: you don't get a hint at the very beginning
 - Text entry area should have the same font as the poem display area.
 - Make it optional to show the original clear text on the side. With associated settings option checkbox. Default value is false.
 - Bug: typing the wrong letter can trigger a look-ahead for that letter somewhere in the poem

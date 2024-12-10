@@ -113,8 +113,17 @@ Nothing gold can stay.
         const hintDelay = localStorage.getItem('hintDelay');
         const selectedFont = localStorage.getItem('selectedFont');
 
-        this.showDotsCheckbox.checked = showDots !== null ? JSON.parse(showDots) : defaultShowDots;
-        this.showLineCheckbox.checked = showLine !== null ? JSON.parse(showLine) : defaultShowLine;
+        // Set checkbox states and update MDL
+        const showDotsValue = showDots !== null ? JSON.parse(showDots) : defaultShowDots;
+        const showLineValue = showLine !== null ? JSON.parse(showLine) : defaultShowLine;
+        
+        this.showDotsCheckbox.checked = showDotsValue;
+        this.showLineCheckbox.checked = showLineValue;
+        
+        // Update MDL checkbox states
+        this.showDotsCheckbox.parentElement.MaterialCheckbox[showDotsValue ? 'check' : 'uncheck']();
+        this.showLineCheckbox.parentElement.MaterialCheckbox[showLineValue ? 'check' : 'uncheck']();
+
         this.hintDelaySlider.value = hintDelay !== null ? hintDelay : defaultHintDelay;
         this.hintDelayValue.textContent = this.hintDelaySlider.value;
         this.fontSelect.value = selectedFont !== null ? selectedFont : defaultFont;
@@ -169,6 +178,7 @@ Nothing gold can stay.
         this.isComplete = false;
         this.lastInputTime = Date.now();
         this.renderPoem();
+        this.resetHintTimer();
         document.body.classList.remove('completed');
 
         // Update MDL textfield state
@@ -284,8 +294,6 @@ Nothing gold can stay.
             this.renderPoem(true);
         }
     }
-
-
 
     renderPoem(showHint = false) {
         if (!this.poem) {
