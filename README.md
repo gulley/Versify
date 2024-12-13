@@ -6,21 +6,19 @@ https://gulley.github.io/Versify/
 
 ## To do
 
-- Bug: when I first open settings after loading the app, it doesn't reflect the state of the app. The dots are showing, but the Show Dots checkbox isn't set.
 - Bug: problems with dashes, as in "Echoing behind us - listen". Can get into a locked state.
 - Don't make me type in punctuation marks. Fill them in for me.
 - Handle the blank lines between stanzas
-- Handle scrolling to keep the display area insertion point in view.
-- Bug: Settings Hint delay time slider is not smooth
 - Completion slider should go in the text input area
 - Make sure the line being filled in is always visible on the screen
-- Bug: State of "Show dots for letters" checkbox is often wrong when the settings dialog first opens
 - Add a timer
 - Record mistyped letters
 - Save time and mistypes
 - Plot time and mistype progress for the same poem
 
 ## Done
+- Bug: Settings Hint delay time slider is not smooth
+- Bug: when I first open settings after loading the app, it doesn't reflect the state of the app. The dots are showing, but the Show Dots checkbox isn't set.
 - Bug: you don't get a hint at the very beginning
 - Text entry area should have the same font as the poem display area.
 - Make it optional to show the original clear text on the side. With associated settings option checkbox. Default value is false.
@@ -37,7 +35,3 @@ https://gulley.github.io/Versify/
 - Get rid of percent progress number
 
 ## Poems and Speeches to Add
-- Midsummer Night's Dream closing speech
-- Henry V, Band of Brothers speech
-- Crossing the Bar
-- Gettysburg Address
