@@ -8,7 +8,7 @@ High there, how he rung upon the rein of a wimpling wing
 In his ecstasy! then off, off forth on swing,
  As a skate's heel sweeps smooth on a bow-bend: the hurl and gliding
  Rebuffed the big wind. My heart in hiding
-Stirred for a bird, – the achieve of, the mastery of the thing!
+Stirred for a bird, the achieve of, the mastery of the thing!
 
 Brute beauty and valour and act, oh, air, pride, plume, here
  Buckle! AND the fire that breaks from thee then, a billion
