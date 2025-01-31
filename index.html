@@ -5,7 +5,7 @@
     <title>Versify</title>
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <style>
         body {
             font-family: monospace;
@@ -16,7 +16,7 @@
         .container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 10px;
         }
         .display-area {
             position: relative;
@@ -41,6 +41,9 @@
         .hidden-text {
             color: lightgray;
         }
+        h3, h4 {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -51,9 +54,12 @@
             <span class="mdl-checkbox__label">Show Text</span>
         </label>
         <button id="resetButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-            <i class="material-icons">refresh</i> Reset
+            <i class="material-icons-outlined">refresh</i> Reset
         </button>
-        <input type="file" id="fileInput" accept=".txt" class="mdl-button mdl-js-button mdl-button--raised">
+        <label class="mdl-button mdl-js-button mdl-button--raised" for="fileInput">
+            <i class="material-icons-outlined">folder</i> Load File
+        </label>
+        <input type="file" id="fileInput" accept=".txt" class="hidden-input">
         <h3 id="title"></h3>
         <h4 id="author"></h4>
         <div id="displayArea" class="display-area" tabindex="0"></div>
@@ -72,7 +78,6 @@
                 this.authorElement = document.getElementById('author');
                 this.fullText = '';
                 this.currentIndex = 0;
-                this.hintTimeout = null;
                 this.showPrompt = false;
                 this.setupEventListeners();
             }
@@ -81,7 +86,37 @@
                 this.showTextCheckbox.addEventListener('change', () => this.updateDisplay());
                 this.resetButton.addEventListener('click', () => this.resetState());
                 this.fileInput.addEventListener('change', (e) => this.loadFile(e));
-                document.addEventListener('keydown', (e) => this.handleInput(e));
+                
+                // Focus the display area by default
+                this.displayArea.focus();
+                
+                // Handle keyboard events only when display area is focused
+                this.displayArea.addEventListener('keydown', (e) => {
+                    this.handleInput(e);
+                    // Prevent space from triggering button clicks
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                    }
+                });
+                
+                // Ensure display area gets focus when clicking anywhere in the container
+                document.querySelector('.container').addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'BUTTON' && 
+                        e.target.tagName !== 'INPUT' && 
+                        !e.target.classList.contains('mdl-checkbox__label')) {
+                        this.displayArea.focus();
+                    }
+                });
+                
+                // Prevent spacebar from triggering buttons
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === ' ' && (
+                        document.activeElement.tagName === 'BUTTON' ||
+                        document.activeElement.classList.contains('mdl-button')
+                    )) {
+                        e.preventDefault();
+                    }
+                });
             }
 
             updateDisplay() {
@@ -101,7 +136,6 @@
                 hiddenSpan.textContent = showText ? hiddenText : this.formatHiddenText(hiddenText);
                 if (showText) hiddenSpan.className = 'hidden-text';
                 this.displayArea.appendChild(hiddenSpan);
-                this.resetHintTimeout();
             }
 
             formatHiddenText(text) {
@@ -110,14 +144,37 @@
 
             handleInput(e) {
                 const nextChar = this.fullText.charAt(this.currentIndex);
-                if (e.key.length === 1) {
-                    if (/\s/.test(nextChar) && /\s/.test(e.key)) {
-                        this.currentIndex++;
-                    } else if (!/\s/.test(nextChar) && e.key.toLowerCase() === nextChar.toLowerCase()) {
-                        this.currentIndex++;
+                const followingChar = this.fullText.charAt(this.currentIndex + 1);
+
+                if (e.key === "Enter" || e.key === " ") {
+                    // First check if we're at a space before newline
+                    if (nextChar === " " && followingChar === "\n") {
+                        this.currentIndex += 2;  // Skip both space and newline
+                    } else if (nextChar === "\n") {
+                        this.currentIndex++;  // Skip just newline
+                    } else if (/\s/.test(nextChar)) {
+                        this.currentIndex++;  // Skip regular space
+                        // After skipping space, check if we're now at a newline
+                        const afterSpaceChar = this.fullText.charAt(this.currentIndex);
+                        if (afterSpaceChar === "\n") {
+                            this.currentIndex++;  // Also skip the newline
+                        }
                     }
-                    this.showPrompt = false;
+                } else if (e.key.length === 1) {
+                    // For regular character matching
+                    if (!/\s/.test(nextChar) && e.key.toLowerCase() === nextChar.toLowerCase()) {
+                        this.currentIndex++;
+                        // After successful character match, check if we're at a line ending
+                        const nextNextChar = this.fullText.charAt(this.currentIndex);
+                        const followingChar = this.fullText.charAt(this.currentIndex + 1);
+                        if (nextNextChar === "\n") {
+                            this.currentIndex++;
+                        } else if (nextNextChar === " " && followingChar === "\n") {
+                            this.currentIndex += 2;
+                        }
+                    }
                 }
+                this.showPrompt = false;
                 this.updateDisplay();
             }
 
@@ -125,6 +182,8 @@
                 this.currentIndex = 0;
                 this.showPrompt = false;
                 this.updateDisplay();
+                // Refocus the display area after reset
+                this.displayArea.focus();
             }
 
             loadFile(event) {
@@ -132,9 +191,13 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        let lines = e.target.result.split('\n').map(line => line.trim()).filter(line => line);
+                        let lines = e.target.result.split('\n');
                         this.titleElement.textContent = lines.shift() || '';
                         this.authorElement.textContent = lines.shift() || '';
+                        // Remove blank lines from the beginning of the text
+                        while (lines.length > 0 && lines[0].trim() === '') {
+                            lines.shift();
+                        }
                         this.fullText = lines.join('\n');
                         this.resetState();
                     };
