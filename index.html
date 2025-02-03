@@ -114,7 +114,7 @@
                                 <input type="checkbox" id="showText" class="mdl-checkbox__input">
                                 <span class="mdl-checkbox__label">Show Text</span>
                             </label>
-                            <span class="hint-text">Press Shift-Space to see the next letter</span>
+                            <span class="hint-text">Shift-Space reveals the next letter</span>
                         </div>
                         
                         <div id="displayArea" class="display-area" tabindex="0"></div>
@@ -293,12 +293,9 @@ Nothing gold can stay.`;
         }
     
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                new TextMemorizationApp();
-            }, 100);
+            new TextMemorizationApp();
         });
-    </script>
-    
+    </script>    
 
 </body>
 </html>
