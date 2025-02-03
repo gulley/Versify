@@ -1,280 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- Head content -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Versify</title>
-    <!-- Material Design Lite CSS with blue-amber theme -->
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-amber.min.css" />
-    <!-- Material Icons -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-blue.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Dialog Polyfill CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.css">
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Merriweather&family=Roboto+Mono&family=Source+Code+Pro&family=Inconsolata&family=Ubuntu+Mono&family=Fira+Mono&display=swap"
-        rel="stylesheet">
-
     <style>
-        /* Updated styles */
         body {
-            font-family: "Roboto", system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f0f0f0;
-            transition: background-color 0.5s, color 0.5s;
+            font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background-color: #f0f4ff;
         }
-
-        body.completed {
-            background-color: #333;
-            color: #999;
-        }
-
-
-        .completed-poem .poem-line {
-            color: #555;
-            /* Dark gray color */
-        }
-
-        .container {
+        .page-content {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 16px;
         }
-
-        .input-card {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 20px;
-            /* Space below the nav bar */
-            z-index: 10;
+        .mdl-layout__header-row .mdl-button {
+            color: white;
+            margin-left: 8px;
         }
-
         .mdl-card {
             width: 100%;
             min-height: 0;
-            margin-bottom: 20px;
-            background-color: #fff;
-            /* Cards always light-colored */
-            color: #000;
-            transition: background-color 0.5s, color 0.5s;
+            margin-bottom: 16px;
         }
-
-        .mdl-card__supporting-text {
-            width: calc(100% - 32px);
+        .mdl-card__title {
+            padding: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-
-        .input-field {
-            flex-grow: 1;
-        }
-
-        .poem {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        .poem-line {
-            margin-bottom: 8px;
-            color: inherit;
-            position: relative;
-        }
-
-        .poem-line-ghost {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            color: rgba(0, 0, 0, 0.2);
-            /* Pale gray color */
-            z-index: -1;
-            /* Send the ghost line behind the actual line */
-            pointer-events: none;
-            /* Prevent interaction */
-        }
-
-        .poem-line-container {
-            position: relative;
-            /* Ensure positioning context for the ghost line */
-        }
-
-        .revealed {
-            color: #4CAF50;
-        }
-
-        .hint {
-            color: #E91E63;
-            /* Pink */
-        }
-
-        .progress-bar-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .progress-text {
-            display: none;
-            /* Hide percent progress number */
-        }
-
-        .title {
+        .mdl-card__title-text {
             font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: inherit;
+            color: rgba(0, 0, 0, 0.87);
         }
-
-        .author {
-            font-style: italic;
-            color: inherit;
-            margin-bottom: 20px;
-        }
-
-        /* Styles for the modal dialog */
-        .mdl-dialog {
-            width: 400px;
-        }
-
-        /* Adjustments for fixed header */
-        .mdl-layout__header {
-            position: fixed;
-            top: 0;
+        .mdl-card__supporting-text {
             width: 100%;
-            z-index: 1;
+            box-sizing: border-box;
+            padding: 16px;
+            color: rgba(0, 0, 0, 0.87);
         }
-
-        .mdl-layout__content {
-            margin-top: 64px;
-            /* Height of the header */
+        .controls-section {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
         }
-
-        @media (min-width: 0px) and (max-width: 479px) {
-            .mdl-layout__content {
-                margin-top: 56px;
-                /* Adjust for smaller screens */
-            }
-
-            .input-card {
-                top: 16px;
-                /* Slightly less space for small screens */
-            }
-        }
-
-        .current-line-box {
-            position: fixed;
-            right: 20px;
-            top: 150px;
-            width: 240px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-            color: #000;
+        .display-area {
+            position: relative;
+            font-family: monospace;
+            white-space: pre;
+            min-height: 100px;
             font-size: 16px;
-            font-family: 'Roboto Mono', monospace;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow-x: auto;
+            outline: none;
+            cursor: text;
+            padding: 16px;
+            background-color: white;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 2px;
+            margin-top: 16px;
+            transition: all 0.2s ease-in-out;
+        }
+        .display-area:focus {
+            border-color: rgb(63, 81, 181); /* MDL primary color */
+            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+            background-color: #ffffff;
+        }
+        .next-char {
+            background-color: #ffeb3b;
+            display: inline;
+            padding: 0 1px;
+        }
+        .hidden-input {
+            position: absolute;
+            left: -9999px;
+        }
+        .hidden-text {
+            color: rgba(0, 0, 0, 0.15);
+        }
+        .metadata {
+            color: rgba(0, 0, 0, 0.54);
+            margin: 8px 0;
         }
     </style>
 </head>
-
 <body>
-    <!-- Navigation Bar -->
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header class="mdl-layout__header mdl-color--primary">
+        <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title">Versify</span>
+                <span class="mdl-layout-title">Versify - Memorize Poems</span>
                 <div class="mdl-layout-spacer"></div>
-                <nav class="mdl-navigation">
-                    <button id="loadButton" class="mdl-button mdl-js-button mdl-button--icon" title="Load Poem">
-                        <i class="material-icons mdl-color-text--white">folder_open</i>
-                    </button>
-                    <button id="resetButton" class="mdl-button mdl-js-button mdl-button--icon" title="Reset Poem">
-                        <i class="material-icons mdl-color-text--white">refresh</i>
-                    </button>
-                    <button id="settingsButton" class="mdl-button mdl-js-button mdl-button--icon" title="Settings">
-                        <i class="material-icons mdl-color-text--white">settings</i>
-                    </button>
-                </nav>
+                <button id="resetButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary">
+                    <i class="material-icons">refresh</i> Reset
+                </button>
+                <label class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" for="fileInput">
+                    <i class="material-icons">folder</i> Load Poem
+                </label>
+                <input type="file" id="fileInput" accept=".txt" class="hidden-input">
             </div>
         </header>
-
-        <!-- Main Content -->
         <main class="mdl-layout__content">
-            <div class="container">
-                <div class="mdl-card mdl-shadow--2dp input-card">
-                    <div class="mdl-card__supporting-text">
-                        <div class="input-row">
-                            <div class="input-field mdl-textfield mdl-js-textfield">
-                                <input class="mdl-textfield__input" type="text" id="input" autocomplete="off" disabled>
-                                <label class="mdl-textfield__label" for="input">Type the current line...</label>
-                            </div>
+            <div class="page-content">
+                <div class="mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title">
+                        <div style="flex-direction: column">
+                            <h2 class="mdl-card__title-text" id="title"></h2>
+                            <h3 class="mdl-typography--subhead" style="margin: 4px 0 0 0; color: rgba(0,0,0,0.54)" id="author"></h3>
                         </div>
                     </div>
-                </div>
-
-                <div class="mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__supporting-text">
-                        <div id="poemContent">
-                            Click on the folder icon to load a poem
+                        <div class="controls-section">
+                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="showText">
+                                <input type="checkbox" id="showText" class="mdl-checkbox__input">
+                                <span class="mdl-checkbox__label">Show Text</span>
+                            </label>
+                            <span class="hint-text">Press Shift-Space to see the next letter</span>
                         </div>
+                        
+                        <div id="displayArea" class="display-area" tabindex="0"></div>
+                        <input id="hiddenInput" class="hidden-input" type="text" aria-hidden="true">
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Hidden File Input -->
-    <input type="file" id="fileInput" accept=".md,.txt" style="display: none">
 
-    <!-- Settings Modal -->
-    <dialog class="mdl-dialog">
-        <h4 class="mdl-dialog__title">Settings</h4>
-        <div class="mdl-dialog__content">
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="showDots">
-                <input type="checkbox" id="showDots" class="mdl-checkbox__input">
-                <span class="mdl-checkbox__label">Show dots for letters</span>
-            </label>
-            <br><br>
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="showLine">
-                <input type="checkbox" id="showLine" class="mdl-checkbox__input">
-                <span class="mdl-checkbox__label">Show Line</span>
-            </label>
-            <br><br>
-            <label for="hintDelaySlider">Hint Delay (sec): <span id="hintDelayValue">3</span></label>
-            <input type="range" id="hintDelaySlider" min="0" max="5" value="3" step="1">
-            <br><br>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <select class="mdl-textfield__input" id="fontSelect">
-                    <option value="'Inconsolata', monospace">Inconsolata</option>
-                    <option value="'Roboto Mono', monospace">Roboto Mono</option>
-                    <option value="'Source Code Pro', monospace">Source Code Pro</option>
-                    <option value="'Ubuntu Mono', monospace">Ubuntu Mono</option>
-                    <option value="'Fira Mono', monospace">Fira Mono</option>
-                </select>
-                <label class="mdl-textfield__label" for="fontSelect">Select Font</label>
-            </div>
-        </div>
-        <div class="mdl-dialog__actions">
-            <button type="button" class="mdl-button close">Close</button>
-        </div>
-    </dialog>
+    <script>
+        class TextMemorizationApp {
+            constructor() {
+                this.displayArea = document.getElementById('displayArea');
+                this.hiddenInput = document.getElementById('hiddenInput');
+                this.showTextCheckbox = document.getElementById('showText');
+                this.resetButton = document.getElementById('resetButton');
+                this.fileInput = document.getElementById('fileInput');
+                this.titleElement = document.getElementById('title');
+                this.authorElement = document.getElementById('author');
+                this.body = document.body; // Reference to body for background color change
+                
+                this.titleElement.textContent = "Nothing Gold Can Stay";
+                this.authorElement.textContent = "by Robert Frost";
+                this.fullText = `Nature's first green is gold,
+Her hardest hue to hold.
+Her early leaf's a flower;
+But only so an hour.
+Then leaf subsides to leaf.
+So Eden sank to grief,
+So dawn goes down to day.
+Nothing gold can stay.`;
+    
+                this.currentIndex = 0;
+                this.showPrompt = false;
+                this.isHinting = false;
+                this.setupEventListeners();
+                this.updateDisplay();
+            }
+    
+            setupEventListeners() {
+                this.showTextCheckbox.addEventListener('change', () => this.updateDisplay());
+                this.resetButton.addEventListener('click', () => this.resetState());
+                this.fileInput.addEventListener('change', (e) => this.loadFile(e));
+    
+                this.displayArea.focus();
+                this.displayArea.addEventListener('keydown', (e) => {
+                    if (e.key === ' ' && e.shiftKey) {
+                        e.preventDefault();
+                        this.isHinting = true;
+                        this.updateDisplay();
+                        return;
+                    }
+                    this.handleInput(e);
+                    if (e.key === ' ') e.preventDefault();
+                });
+    
+                this.displayArea.addEventListener('keyup', (e) => {
+                    if (e.key === ' ' || e.key === 'Shift') {
+                        this.isHinting = false;
+                        this.updateDisplay();
+                    }
+                });
+    
+                this.displayArea.addEventListener('blur', () => {
+                    this.isHinting = false;
+                    this.updateDisplay();
+                });
+    
+                document.querySelector('.page-content').addEventListener('click', (e) => {
+                    if (!['BUTTON', 'INPUT'].includes(e.target.tagName) && !e.target.classList.contains('mdl-checkbox__label')) {
+                        this.displayArea.focus();
+                    }
+                });
+    
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === ' ' && (document.activeElement.tagName === 'BUTTON' || document.activeElement.classList.contains('mdl-button'))) {
+                        e.preventDefault();
+                    }
+                });
+            }
+    
+            updateDisplay() {
+                const revealedText = this.fullText.substring(0, this.currentIndex);
+                const nextChar = this.fullText.charAt(this.currentIndex) || ' ';
+                const hiddenText = this.fullText.substring(this.currentIndex + 1);
+                const showText = this.showTextCheckbox.checked;
+    
+                this.displayArea.innerHTML = '';
+                const revealedSpan = document.createElement('span');
+                revealedSpan.textContent = revealedText;
+                this.displayArea.appendChild(revealedSpan);
+    
+                const nextCharSpan = document.createElement('span');
+                nextCharSpan.className = 'next-char';
+                nextCharSpan.textContent = this.isHinting || this.showPrompt || !/[a-zA-Z]/.test(nextChar) ? nextChar : '.';
+                this.displayArea.appendChild(nextCharSpan);
+    
+                const hiddenSpan = document.createElement('span');
+                hiddenSpan.textContent = showText ? hiddenText : this.formatHiddenText(hiddenText);
+                if (showText) hiddenSpan.className = 'hidden-text';
+                this.displayArea.appendChild(hiddenSpan);
+    
+                if (this.currentIndex >= this.fullText.length) {
+                    this.setBackgroundColor("#14335e");
+                }
+            }
+    
+            formatHiddenText(text) {
+                return text.split('').map(char => /[a-zA-Z]/.test(char) ? '.' : char).join('');
+            }
+    
+            handleInput(e) {
+                const nextChar = this.fullText.charAt(this.currentIndex);
+                const followingChar = this.fullText.charAt(this.currentIndex + 1);
+    
+                if (e.key === "Enter" || e.key === " ") {
+                    if (nextChar === " " && followingChar === "\n") {
+                        this.currentIndex += 2;
+                    } else if (nextChar === "\n") {
+                        this.currentIndex++;
+                    } else if (/\s/.test(nextChar)) {
+                        this.currentIndex++;
+                        const afterSpaceChar = this.fullText.charAt(this.currentIndex);
+                        if (afterSpaceChar === "\n") {
+                            this.currentIndex++;
+                        }
+                    }
+                } else if (e.key.length === 1) {
+                    if (!/\s/.test(nextChar) && e.key.toLowerCase() === nextChar.toLowerCase()) {
+                        this.currentIndex++;
+                        const nextNextChar = this.fullText.charAt(this.currentIndex);
+                        const followingChar = this.fullText.charAt(this.currentIndex + 1);
+                        if (nextNextChar === "\n") {
+                            this.currentIndex++;
+                        } else if (nextNextChar === " " && followingChar === "\n") {
+                            this.currentIndex += 2;
+                        }
+                    }
+                }
+                this.showPrompt = false;
+                this.updateDisplay();
+            }
+    
+            resetState() {
+                this.currentIndex = 0;
+                this.showPrompt = false;
+                this.updateDisplay();
+                this.setBackgroundColor("#f0f4ff");
+                this.displayArea.focus();
+            }
+    
+            loadFile(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        let lines = e.target.result.split('\n');
+                        this.titleElement.textContent = lines.shift() || '';
+                        this.authorElement.textContent = lines.shift() || '';
+                        while (lines.length > 0 && lines[0].trim() === '') {
+                            lines.shift();
+                        }
+                        this.fullText = lines.join('\n');
+                        this.resetState();
+                    };
+                    reader.readAsText(file);
+                }
+            }
+    
+            setBackgroundColor(color) {
+                this.body.style.transition = "background-color 1s ease-in-out";
+                this.body.style.backgroundColor = color;
+            }
+        }
+    
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                new TextMemorizationApp();
+            }, 100);
+        });
+    </script>
+    
 
-    <!-- Scripts -->
-    <!-- Material Design Lite JS -->
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <!-- Dialog Polyfill JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.js"></script>
-    <!-- Versify JS -->
-    <script src="versify.js"></script>
 </body>
-
 </html>
