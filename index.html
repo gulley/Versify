@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-            background-color: #fafafa;
+            background-color: #f0f4ff;
         }
         .page-content {
             max-width: 800px;
@@ -126,6 +126,7 @@
         </main>
     </div>
 
+
     <script>
         class TextMemorizationApp {
             constructor() {
@@ -136,24 +137,33 @@
                 this.fileInput = document.getElementById('fileInput');
                 this.titleElement = document.getElementById('title');
                 this.authorElement = document.getElementById('author');
-                this.fullText = '';
+                this.body = document.body; // Reference to body for background color change
+                
+                this.titleElement.textContent = "Nothing Gold Can Stay";
+                this.authorElement.textContent = "by Robert Frost";
+                this.fullText = `Nature's first green is gold,
+Her hardest hue to hold.
+Her early leaf's a flower;
+But only so an hour.
+Then leaf subsides to leaf.
+So Eden sank to grief,
+So dawn goes down to day.
+Nothing gold can stay.`;
+    
                 this.currentIndex = 0;
                 this.showPrompt = false;
                 this.isHinting = false;
                 this.setupEventListeners();
+                this.updateDisplay();
             }
-
+    
             setupEventListeners() {
                 this.showTextCheckbox.addEventListener('change', () => this.updateDisplay());
                 this.resetButton.addEventListener('click', () => this.resetState());
                 this.fileInput.addEventListener('change', (e) => this.loadFile(e));
-                
-                // Focus the display area by default
+    
                 this.displayArea.focus();
-                
-                // Handle keyboard events only when display area is focused
                 this.displayArea.addEventListener('keydown', (e) => {
-                    // Check for shift+space for hinting
                     if (e.key === ' ' && e.shiftKey) {
                         e.preventDefault();
                         this.isHinting = true;
@@ -161,92 +171,83 @@
                         return;
                     }
                     this.handleInput(e);
-                    // Prevent space from triggering button clicks
-                    if (e.key === ' ') {
-                        e.preventDefault();
-                    }
+                    if (e.key === ' ') e.preventDefault();
                 });
-
-                // Handle key up to stop hinting
+    
                 this.displayArea.addEventListener('keyup', (e) => {
                     if (e.key === ' ' || e.key === 'Shift') {
                         this.isHinting = false;
                         this.updateDisplay();
                     }
                 });
-                
-                // Ensure hint is removed when focus is lost
+    
                 this.displayArea.addEventListener('blur', () => {
                     this.isHinting = false;
                     this.updateDisplay();
                 });
-                
-                // Ensure display area gets focus when clicking anywhere in the content area
+    
                 document.querySelector('.page-content').addEventListener('click', (e) => {
-                    if (e.target.tagName !== 'BUTTON' && 
-                        e.target.tagName !== 'INPUT' && 
-                        !e.target.classList.contains('mdl-checkbox__label')) {
+                    if (!['BUTTON', 'INPUT'].includes(e.target.tagName) && !e.target.classList.contains('mdl-checkbox__label')) {
                         this.displayArea.focus();
                     }
                 });
-                
-                // Prevent spacebar from triggering buttons
+    
                 document.addEventListener('keydown', (e) => {
-                    if (e.key === ' ' && (
-                        document.activeElement.tagName === 'BUTTON' ||
-                        document.activeElement.classList.contains('mdl-button')
-                    )) {
+                    if (e.key === ' ' && (document.activeElement.tagName === 'BUTTON' || document.activeElement.classList.contains('mdl-button'))) {
                         e.preventDefault();
                     }
                 });
             }
-
+    
             updateDisplay() {
                 const revealedText = this.fullText.substring(0, this.currentIndex);
                 const nextChar = this.fullText.charAt(this.currentIndex) || ' ';
                 const hiddenText = this.fullText.substring(this.currentIndex + 1);
                 const showText = this.showTextCheckbox.checked;
+    
                 this.displayArea.innerHTML = '';
                 const revealedSpan = document.createElement('span');
                 revealedSpan.textContent = revealedText;
                 this.displayArea.appendChild(revealedSpan);
+    
                 const nextCharSpan = document.createElement('span');
                 nextCharSpan.className = 'next-char';
                 nextCharSpan.textContent = this.isHinting || this.showPrompt || !/[a-zA-Z]/.test(nextChar) ? nextChar : '.';
                 this.displayArea.appendChild(nextCharSpan);
+    
                 const hiddenSpan = document.createElement('span');
                 hiddenSpan.textContent = showText ? hiddenText : this.formatHiddenText(hiddenText);
                 if (showText) hiddenSpan.className = 'hidden-text';
                 this.displayArea.appendChild(hiddenSpan);
+    
+                if (this.currentIndex >= this.fullText.length) {
+                    this.setBackgroundColor("#14335e");
+                }
             }
-
+    
             formatHiddenText(text) {
                 return text.split('').map(char => /[a-zA-Z]/.test(char) ? '.' : char).join('');
             }
-
+    
             handleInput(e) {
                 const nextChar = this.fullText.charAt(this.currentIndex);
                 const followingChar = this.fullText.charAt(this.currentIndex + 1);
-
+    
                 if (e.key === "Enter" || e.key === " ") {
-                    // First check if we're at a space before newline
                     if (nextChar === " " && followingChar === "\n") {
-                        this.currentIndex += 2;  // Skip both space and newline
+                        this.currentIndex += 2;
                     } else if (nextChar === "\n") {
-                        this.currentIndex++;  // Skip just newline
+                        this.currentIndex++;
                     } else if (/\s/.test(nextChar)) {
-                        this.currentIndex++;  // Skip regular space
-                        // After skipping space, check if we're now at a newline
+                        this.currentIndex++;
                         const afterSpaceChar = this.fullText.charAt(this.currentIndex);
                         if (afterSpaceChar === "\n") {
-                            this.currentIndex++;  // Also skip the newline
+                            this.currentIndex++;
                         }
                     }
                 } else if (e.key.length === 1) {
-                    // For regular character matching
                     if (!/\s/.test(nextChar) && e.key.toLowerCase() === nextChar.toLowerCase()) {
                         this.currentIndex++;
-                        // After successful character match, check if we're at a line ending
                         const nextNextChar = this.fullText.charAt(this.currentIndex);
                         const followingChar = this.fullText.charAt(this.currentIndex + 1);
                         if (nextNextChar === "\n") {
@@ -259,15 +260,15 @@
                 this.showPrompt = false;
                 this.updateDisplay();
             }
-
+    
             resetState() {
                 this.currentIndex = 0;
                 this.showPrompt = false;
                 this.updateDisplay();
-                // Refocus the display area after reset
+                this.setBackgroundColor("#f0f4ff");
                 this.displayArea.focus();
             }
-
+    
             loadFile(event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -276,7 +277,6 @@
                         let lines = e.target.result.split('\n');
                         this.titleElement.textContent = lines.shift() || '';
                         this.authorElement.textContent = lines.shift() || '';
-                        // Remove blank lines from the beginning of the text
                         while (lines.length > 0 && lines[0].trim() === '') {
                             lines.shift();
                         }
@@ -286,14 +286,20 @@
                     reader.readAsText(file);
                 }
             }
+    
+            setBackgroundColor(color) {
+                this.body.style.transition = "background-color 1s ease-in-out";
+                this.body.style.backgroundColor = color;
+            }
         }
-        // Wait for both DOM content and MDL to be loaded
+    
         window.addEventListener('load', () => {
-            // Additional delay to ensure MDL components are upgraded
             setTimeout(() => {
                 new TextMemorizationApp();
             }, 100);
         });
     </script>
+    
+
 </body>
 </html>
