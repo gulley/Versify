@@ -39,6 +39,10 @@
             padding: 16px;
             color: rgba(0, 0, 0, 0.87);
         }
+        .mdl-textfield__input {
+           color: black !important;
+            background-color: white !important;
+        }
         .controls-section {
             display: flex;
             gap: 16px;
@@ -93,10 +97,11 @@
                 <button id="resetButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary">
                     <i class="material-icons">refresh</i> Reset
                 </button>
-                <label class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" for="fileInput">
-                    <i class="material-icons">folder</i> Load Poem
-                </label>
-                <input type="file" id="fileInput" accept=".txt" class="hidden-input">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <select id="poemSelector" class="mdl-textfield__input">
+                        <option value="" disabled selected>Select a Poem</option>
+                    </select>
+                </div>
             </div>
         </header>
         <main class="mdl-layout__content">
@@ -133,7 +138,8 @@
                 this.hiddenInput = document.getElementById('hiddenInput');
                 this.showTextCheckbox = document.getElementById('showText');
                 this.resetButton = document.getElementById('resetButton');
-                this.fileInput = document.getElementById('fileInput');
+                this.poemSelector = document.getElementById('poemSelector'); // Ensure poem selector exists
+
                 this.titleElement = document.getElementById('title');
                 this.authorElement = document.getElementById('author');
                 this.body = document.body; // Reference to body for background color change
@@ -153,13 +159,14 @@ Nothing gold can stay.`;
                 this.showPrompt = false;
                 this.isHinting = false;
                 this.setupEventListeners();
+                this.loadPoemList();
                 this.updateDisplay();
             }
     
             setupEventListeners() {
                 this.showTextCheckbox.addEventListener('change', () => this.updateDisplay());
                 this.resetButton.addEventListener('click', () => this.resetState());
-                this.fileInput.addEventListener('change', (e) => this.loadFile(e));
+                this.poemSelector.addEventListener('change', (e) => this.loadPoem(e.target.value));
     
                 this.displayArea.focus();
                 this.displayArea.addEventListener('keydown', (e) => {
@@ -198,6 +205,36 @@ Nothing gold can stay.`;
                 });
             }
     
+            async loadPoemList() {
+        try {
+            const response = await fetch('poems/list.json');  // Pre-generated JSON list of poem files
+            const poems = await response.json();
+            poems.forEach(poem => {
+                const option = document.createElement('option');
+                option.value = poem;
+                option.textContent = poem.replace('.txt', '');
+                this.poemSelector.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading poem list:', error);
+        }
+    }
+
+    async loadPoem(poemFile) {
+        try {
+            const response = await fetch(`poems/${poemFile}`);
+            const text = await response.text();
+            let lines = text.split('\n');
+            this.titleElement.textContent = lines.shift() || '';
+            this.authorElement.textContent = lines.shift() || '';
+            this.fullText = lines.join('\n').trim();
+            this.resetState();
+        } catch (error) {
+            console.error('Error loading poem:', error);
+        }
+    }
+
+
             updateDisplay() {
                 const revealedText = this.fullText.substring(0, this.currentIndex);
                 const nextChar = this.fullText.charAt(this.currentIndex) || ' ';
@@ -292,9 +329,10 @@ Nothing gold can stay.`;
             }
         }
     
-        window.addEventListener('load', () => {
+        window.addEventListener('DOMContentLoaded', () => {
             new TextMemorizationApp();
         });
+
     </script>    
 
 </body>
