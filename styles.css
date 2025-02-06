@@ -1,0 +1,123 @@
+body {
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background-color: #f0f4ff;
+}
+
+.page-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.mdl-layout__header-row .mdl-button {
+    color: white;
+    margin-left: 8px;
+}
+
+.mdl-card {
+    width: 100%;
+    min-height: 0;
+    margin-bottom: 16px;
+}
+
+.mdl-card__title {
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mdl-card__title-text {
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.mdl-card__supporting-text {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.mdl-textfield__input {
+    color: black !important;
+    background-color: white !important;
+}
+
+.controls-section {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.display-mode-select {
+    width: 150px;
+}
+
+.display-area {
+    position: relative;
+    font-family: monospace;
+    white-space: pre;
+    min-height: 100px;
+    font-size: 16px;
+    overflow-x: auto;
+    outline: none;
+    cursor: text;
+    padding: 16px;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 2px;
+    margin-top: 16px;
+    transition: all 0.2s ease-in-out;
+}
+
+.display-area:focus {
+    border-color: rgb(63, 81, 181);
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+    background-color: #ffffff;
+}
+
+.next-char {
+    background-color: #ffeb3b;
+    display: inline;
+    padding: 0 1px;
+}
+
+.hidden-input {
+    position: absolute;
+    left: -9999px;
+}
+
+.hidden-text {
+    color: rgba(0, 0, 0, 0.25);
+}
+
+.invisible-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+.toggle-container {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 6px 0;
+}
+
+.toggle-btn {
+    padding: 4px 8px;
+    border: 1px solid #3f51b5;
+    background-color: white;
+    color: #3f51b5;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.toggle-btn.active {
+    background-color: #3f51b5;
+    color: white;
+}
+
+.metadata {
+    color: rgba(0, 0, 0, 0.54);
+    margin: 8px 0;
+}
