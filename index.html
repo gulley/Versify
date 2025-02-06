@@ -99,11 +99,33 @@
         }
 
         .hidden-text {
-            color: rgba(0, 0, 0, 0.15);
+            color: rgba(0, 0, 0, 0.25);
         }
 
         .invisible-text {
             color: rgba(0, 0, 0, 0);
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin: 6px 0;
+        }
+
+        .toggle-btn {
+            padding: 4px 8px;
+            border: 1px solid #3f51b5;
+            background-color: white;
+            color: #3f51b5;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .toggle-btn.active {
+            background-color: #3f51b5;
+            color: white;
         }
 
         .metadata {
@@ -145,37 +167,12 @@
 
 
                         <div class="controls-section">
-                            <!-- <label class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-                                for="displayMode">
-                                <select id="displayMode" class="mdl-textfield__input display-mode-select">
-                                    <option value="dots" selected>Dots</option>
-                                    <option value="text">Full Text</option>
-                                    <option value="none">None</option>
-                                </select>
-                                <span class="mdl-textfield__label">Prompt</span>
-                            </label> -->
 
-                            <div style="margin: 20px;">
-                                Prompt Mode:<br />
-                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="dots-option">
-                                    <input type="radio" id="dots-option" class="mdl-radio__button" name="prompt-mode"
-                                        value="dots" checked>
-                                    <span class="mdl-radio__label">Dots</span>
-                                </label>
-                                <br>
-
-                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="text-option">
-                                    <input type="radio" id="text-option" class="mdl-radio__button" name="prompt-mode"
-                                        value="text">
-                                    <span class="mdl-radio__label">Text</span>
-                                </label>
-                                <br>
-
-                                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="none-option">
-                                    <input type="radio" id="none-option" class="mdl-radio__button" name="prompt-mode"
-                                        value="none">
-                                    <span class="mdl-radio__label">None</span>
-                                </label>
+                            Prompt:
+                            <div class="toggle-container">
+                                <button class="toggle-btn active" data-mode="dots">Dots</button>
+                                <button class="toggle-btn" data-mode="text">Text</button>
+                                <button class="toggle-btn" data-mode="none">None</button>
                             </div>
 
 
@@ -226,16 +223,14 @@ Nothing gold can stay.`;
             setupEventListeners() {
 
 
-                // this.displayMode.addEventListener('change', () => this.updateDisplay());
-
-                const radioButtons = document.querySelectorAll('input[name="prompt-mode"]');
-                radioButtons.forEach(radio => {
-                    radio.addEventListener('change', (e) => {
-                        // this.promptSetting = document.querySelector('input[name="prompt-mode"]:checked').value;
+                const buttons = document.querySelectorAll('.toggle-btn');
+                buttons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        buttons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
                         this.updateDisplay();
                     });
                 });
-
 
 
                 this.resetButton.addEventListener('click', () => this.resetState());
@@ -307,13 +302,18 @@ Nothing gold can stay.`;
                 }
             }
 
+
             updateDisplay() {
+                // Get the active prompt mode from the toggle button
+                const activeButton = document.querySelector('.toggle-btn.active');
+                const promptMode = activeButton ? activeButton.getAttribute('data-mode') : 'dots'; // Fallback to 'dots'
+
                 const revealedText = this.fullText.substring(0, this.currentIndex);
                 const nextChar = this.fullText.charAt(this.currentIndex) || ' ';
                 const hiddenText = this.fullText.substring(this.currentIndex + 1);
-                const promptMode = document.querySelector('input[name="prompt-mode"]:checked').value;
 
                 this.displayArea.innerHTML = '';
+
                 const revealedSpan = document.createElement('span');
                 revealedSpan.textContent = revealedText;
                 this.displayArea.appendChild(revealedSpan);
@@ -324,15 +324,15 @@ Nothing gold can stay.`;
                 this.displayArea.appendChild(nextCharSpan);
 
                 const hiddenSpan = document.createElement('span');
+
+                // Handle display based on promptMode
                 if (promptMode === 'text') {
                     hiddenSpan.textContent = hiddenText;
                     hiddenSpan.className = 'hidden-text';
-                }
-                if (promptMode === 'dots') {
+                } else if (promptMode === 'dots') {
                     hiddenSpan.textContent = this.formatHiddenText(hiddenText);
                     hiddenSpan.className = 'hidden-text';
-                }
-                if (promptMode === 'none') {
+                } else if (promptMode === 'none') {
                     hiddenSpan.className = 'invisible-text';
                 }
 
@@ -342,6 +342,9 @@ Nothing gold can stay.`;
                     this.setBackgroundColor("#14335e");
                 }
             }
+
+
+
 
             formatHiddenText(text) {
                 return text.split('').map(char => /[a-zA-Z]/.test(char) ? '.' : char).join('');
