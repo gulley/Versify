@@ -187,6 +187,7 @@ Nothing gold can stay.`;
     }
 
     setBackgroundColor(color) {
+        document.body.style.transition = "background-color 1s ease-in-out";
         document.body.style.backgroundColor = color;
     }
 }
