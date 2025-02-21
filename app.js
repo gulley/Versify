@@ -122,7 +122,7 @@ Nothing gold can stay.`;
 
         const nextCharSpan = document.createElement('span');
         nextCharSpan.className = 'next-char';
-        nextCharSpan.textContent = this.isHinting || !/[a-zA-Z]/.test(nextChar) ? nextChar : '.';
+        nextCharSpan.textContent = this.isHinting || !/[a-zA-Z]/.test(nextChar) ? nextChar : '·';
         this.displayArea.appendChild(nextCharSpan);
 
         const hiddenSpan = document.createElement('span');
@@ -145,7 +145,7 @@ Nothing gold can stay.`;
     }
 
     formatHiddenText(text) {
-        return text.split('').map(char => /[a-zA-Z]/.test(char) ? '.' : char).join('');
+        return text.split('').map(char => /[a-zA-Z]/.test(char) ? '·' : char).join('');
     }
 
     handleInput(e) {
