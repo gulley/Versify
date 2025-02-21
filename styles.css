@@ -91,6 +91,15 @@ body {
     color: rgba(0, 0, 0, 0.25);
 }
 
+.hidden-dot {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.hidden-dot:hover {
+    color: rgba(0, 0, 0, 0.6);
+}
+
 .invisible-text {
     color: rgba(0, 0, 0, 0);
 }

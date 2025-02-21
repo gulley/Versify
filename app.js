@@ -64,6 +64,17 @@ Nothing gold can stay.`;
             this.updateDisplay();
         });
 
+        // Add click handler for hidden dots
+        this.displayArea.addEventListener('click', (e) => {
+            if (e.target.classList.contains('hidden-dot')) {
+                const clickedIndex = parseInt(e.target.dataset.index);
+                if (!isNaN(clickedIndex)) {
+                    this.currentIndex = clickedIndex;
+                    this.updateDisplay();
+                }
+            }
+        });
+
         document.querySelector('.page-content').addEventListener('click', (e) => {
             if (!['BUTTON', 'INPUT'].includes(e.target.tagName) && !e.target.classList.contains('mdl-checkbox__label')) {
                 this.displayArea.focus();
@@ -106,6 +117,15 @@ Nothing gold can stay.`;
         }
     }
 
+    escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     updateDisplay() {
         const activeButton = document.querySelector('.toggle-btn.active');
         const promptMode = activeButton ? activeButton.getAttribute('data-mode') : 'dots';
@@ -126,13 +146,12 @@ Nothing gold can stay.`;
         this.displayArea.appendChild(nextCharSpan);
 
         const hiddenSpan = document.createElement('span');
+        hiddenSpan.className = 'hidden-text';
 
         if (promptMode === 'text') {
             hiddenSpan.textContent = hiddenText;
-            hiddenSpan.className = 'hidden-text';
         } else if (promptMode === 'dots') {
-            hiddenSpan.textContent = this.formatHiddenText(hiddenText);
-            hiddenSpan.className = 'hidden-text';
+            hiddenSpan.innerHTML = this.formatHiddenText(hiddenText);
         } else if (promptMode === 'none') {
             hiddenSpan.className = 'invisible-text';
         }
@@ -145,7 +164,18 @@ Nothing gold can stay.`;
     }
 
     formatHiddenText(text) {
-        return text.split('').map(char => /[a-zA-Z]/.test(char) ? '·' : char).join('');
+        let result = '';
+        let index = this.currentIndex + 1;
+        
+        for (const char of text) {
+            if (/[a-zA-Z]/.test(char)) {
+                result += `<span class="hidden-dot" data-index="${index}">·</span>`;
+            } else {
+                result += this.escapeHtml(char);
+            }
+            index++;
+        }
+        return result;
     }
 
     handleInput(e) {
