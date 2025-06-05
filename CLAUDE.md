@@ -10,6 +10,7 @@ Versify is a poetry memorization web application that helps users learn poems th
 
 Since this is a static web application:
 - **Local development**: Open `index.html` in a web browser or use a local server
+- **Update poem list**: `npm run update-poems` - regenerates `list.json` from `.txt` files
 - **Deployment**: The app is deployed to GitHub Pages at https://gulley.github.io/Versify/
 
 ## Architecture
@@ -32,17 +33,22 @@ Since this is a static web application:
 Each poem file follows this structure:
 ```
 Title
-by Author
+Attribution
 
 Poem content line 1
 Poem content line 2
 ...
 ```
 
+- **Line 1**: Title of the poem
+- **Line 2**: Attribution (author, source, etc. - any format)
+- **Line 3**: Must be blank
+- **Line 4+**: Poem content
+
 ### Data Management
 
-- **`poems/list.json`**: Array of poem filenames that populates the dropdown selector
-- When adding new poems: add the .txt file to `/poems/` and update `list.json`
+- **`poems/list.json`**: Auto-generated array of poem filenames that populates the dropdown selector
+- **`scripts/update-poem-list.js`**: Script that scans `poems/` directory and regenerates `list.json`
 - Poems are loaded dynamically via fetch requests
 
 ### Key Features
@@ -55,6 +61,15 @@ Poem content line 2
 
 ## Adding New Poems
 
+### Automated Workflow (Recommended)
 1. Create a new `.txt` file in the `poems/` directory with the proper format
-2. Add the filename to `poems/list.json` array
-3. The poem will automatically appear in the dropdown selector
+2. Commit and push to GitHub - the GitHub Action will automatically update `list.json`
+3. The poem will appear in the dropdown selector once deployed
+
+### Manual Workflow
+1. Create a new `.txt` file in the `poems/` directory with the proper format
+2. Run `npm run update-poems` to regenerate `list.json`
+3. Commit both the new poem file and updated `list.json`
+
+### Removing Poems
+Simply delete the `.txt` file from `poems/` - `list.json` will be updated automatically to reflect only existing files.

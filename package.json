@@ -1,0 +1,13 @@
+{
+  "name": "versify",
+  "version": "1.0.0",
+  "description": "Poetry memorization web application",
+  "scripts": {
+    "update-poems": "node scripts/update-poem-list.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gulley/Versify"
+  },
+  "license": "MIT"
+}

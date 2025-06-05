@@ -1,0 +1,41 @@
+name: Update Poem List
+
+on:
+  push:
+    paths:
+      - 'poems/*.txt'
+  workflow_dispatch:
+
+jobs:
+  update-poem-list:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Update poem list
+      run: npm run update-poems
+      
+    - name: Check if list.json changed
+      id: check-changes
+      run: |
+        if git diff --quiet poems/list.json; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Commit updated list.json
+      if: steps.check-changes.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add poems/list.json
+        git commit -m "Auto-update poem list from .txt files"
+        git push
