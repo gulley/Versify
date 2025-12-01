@@ -1,0 +1,122 @@
+/* Versify - Practice Page Styles */
+/* Page-specific styles for practice.html */
+
+body {
+    background-color: var(--color-bg-practice);
+    transition: background-color var(--transition-slow);
+}
+
+/* Page Content Container */
+.page-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+/* Material Design Lite Overrides */
+.mdl-layout__header-row .mdl-button {
+    color: white;
+    margin-left: 8px;
+}
+
+.mdl-card {
+    width: 100%;
+    min-height: 0;
+    margin-bottom: 16px;
+}
+
+.mdl-card__title {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mdl-card__title-text {
+    font-size: 24px;
+    color: var(--color-text-light);
+}
+
+.mdl-card__supporting-text {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    color: var(--color-text-light);
+}
+
+.mdl-textfield__input {
+    color: black !important;
+    background-color: white !important;
+}
+
+/* Controls Section */
+.controls-section {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.hint-text {
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+    margin-left: auto;
+}
+
+/* Display Area */
+.display-area {
+    position: relative;
+    font-family: var(--font-family-mono);
+    white-space: pre;
+    min-height: 100px;
+    font-size: var(--font-size-base);
+    overflow-x: auto;
+    outline: none;
+    cursor: text;
+    padding: 16px;
+    background-color: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    margin-top: 16px;
+    transition: all var(--transition-fast);
+}
+
+.display-area:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-shadow);
+    background-color: var(--color-bg-white);
+}
+
+/* Character States */
+.next-char {
+    background-color: var(--color-highlight);
+    display: inline;
+    padding: 0 1px;
+}
+
+.hidden-text {
+    color: rgba(0, 0, 0, 0.25);
+}
+
+.hidden-dot {
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.hidden-dot:hover {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.invisible-text {
+    color: rgba(0, 0, 0, 0);
+}
+
+/* Hidden Input */
+.hidden-input {
+    position: absolute;
+    left: -9999px;
+}
+
+/* Metadata */
+.metadata {
+    color: var(--color-text-muted);
+    margin: 8px 0;
+}

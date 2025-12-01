@@ -1,0 +1,131 @@
+/* Versify - Base Styles */
+/* Shared foundations: reset, typography, colors, and utilities */
+
+/* CSS Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* CSS Variables - Design Tokens */
+:root {
+    /* Colors */
+    --color-primary: #3f51b5;
+    --color-primary-light: rgba(63, 81, 181, 0.1);
+    --color-primary-shadow: rgba(63, 81, 181, 0.2);
+
+    --color-text-primary: #333;
+    --color-text-secondary: #666;
+    --color-text-tertiary: #999;
+    --color-text-muted: rgba(0, 0, 0, 0.54);
+    --color-text-light: rgba(0, 0, 0, 0.87);
+
+    --color-bg-default: #f5f5f5;
+    --color-bg-practice: #f0f4ff;
+    --color-bg-complete: #14335e;
+    --color-bg-error: #ffebee;
+    --color-bg-white: #ffffff;
+
+    --color-border: rgba(0, 0, 0, 0.12);
+    --color-border-light: rgba(0, 0, 0, 0.08);
+    --color-border-error: #ffcdd2;
+
+    --color-highlight: #ffeb3b;
+    --color-error: #c62828;
+    --color-error-bg: #ffebee;
+
+    /* Typography */
+    --font-family-base: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    --font-family-mono: monospace;
+
+    --font-size-base: 16px;
+    --font-size-small: 0.85rem;
+    --font-size-smaller: 0.7rem;
+    --font-size-medium: 0.9rem;
+    --font-size-large: 1.2rem;
+    --font-size-xlarge: 1.8rem;
+
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.25rem;
+    --spacing-2xl: 2rem;
+    --spacing-3xl: 3rem;
+
+    /* Border Radius */
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 6px;
+    --radius-xl: 8px;
+    --radius-xxl: 12px;
+    --radius-round: 50%;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.15);
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 1s ease-in-out;
+}
+
+/* Body Base Styles */
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+.text-error {
+    color: var(--color-error);
+}
+
+/* Focus Styles */
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Animation Keyframes */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
