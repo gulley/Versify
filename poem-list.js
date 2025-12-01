@@ -204,6 +204,14 @@ class PoemList {
                 });
                 break;
 
+            case 'random':
+                // Fisher-Yates shuffle algorithm
+                for (let i = sorted.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+                }
+                break;
+
             default:
                 sorted.sort((a, b) => a.title.localeCompare(b.title));
         }
