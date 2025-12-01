@@ -2,8 +2,6 @@ class TextMemorizationApp {
     constructor() {
         this.displayArea = document.getElementById('displayArea');
         this.hiddenInput = document.getElementById('hiddenInput');
-        this.resetButton = document.getElementById('resetButton');
-        this.backButton = document.getElementById('backButton');
         this.titleElement = document.getElementById('title');
         this.authorElement = document.getElementById('author');
         this.body = document.body;
@@ -38,8 +36,6 @@ Nothing gold can stay.`;
             });
         });
 
-        this.resetButton.addEventListener('click', () => this.resetState());
-        this.backButton.addEventListener('click', () => this.goBackToList());
 
         this.displayArea.focus();
         this.displayArea.addEventListener('keydown', (e) => {
@@ -86,9 +82,9 @@ Nothing gold can stay.`;
             if (e.key === ' ' && (document.activeElement.tagName === 'BUTTON' || document.activeElement.classList.contains('mdl-button'))) {
                 e.preventDefault();
             }
-            // ESC key to go back to poem list
+            // ESC key to reset
             if (e.key === 'Escape') {
-                this.goBackToList();
+                this.resetState();
             }
         });
     }
@@ -223,7 +219,7 @@ Nothing gold can stay.`;
     resetState() {
         this.currentIndex = 0;
         this.updateDisplay();
-        this.setBackgroundColor("#f0f4ff");
+        this.setBackgroundColor("#f8f9fa");
         this.displayArea.focus();
     }
 
@@ -243,9 +239,6 @@ Nothing gold can stay.`;
         }
     }
 
-    goBackToList() {
-        window.location.href = 'index.html';
-    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
