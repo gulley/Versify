@@ -116,16 +116,18 @@
 .search-input {
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-2xl) var(--spacing-sm) var(--spacing-md);
-    border: none;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     font-size: var(--font-size-medium);
     outline: none;
-    transition: box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     font-family: var(--font-family-base);
+    background-color: var(--color-bg-white);
 }
 
 .search-input:focus {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 .clear-search-btn {
@@ -154,16 +156,17 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    color: white;
+    color: var(--color-text-secondary);
 }
 
 .sort-container label {
     font-size: var(--font-size-medium);
+    font-weight: 500;
 }
 
 .sort-select {
-    padding: var(--spacing-sm);
-    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     font-size: var(--font-size-medium);
     background-color: var(--color-bg-white);
@@ -171,18 +174,20 @@
     cursor: pointer;
     outline: none;
     font-family: var(--font-family-base);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .sort-select:focus {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 /* Header Component */
 .header {
-    background-color: var(--color-primary);
-    color: white;
-    padding: var(--spacing-lg) var(--spacing-2xl);
-    box-shadow: var(--shadow-sm);
+    background-color: var(--color-bg-white);
+    color: var(--color-text-primary);
+    padding: var(--spacing-xl) var(--spacing-2xl);
+    border-bottom: 2px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -196,15 +201,18 @@
 }
 
 .app-title {
-    font-size: var(--font-size-xlarge);
-    font-weight: var(--font-weight-medium);
+    font-size: 2rem;
+    font-weight: 600;
     margin: 0;
+    color: var(--color-text-primary);
+    letter-spacing: -0.5px;
 }
 
 .app-subtitle {
     font-size: var(--font-size-medium);
-    opacity: 0.9;
+    color: var(--color-text-secondary);
     margin: 0;
+    margin-top: 0.25rem;
 }
 
 .header-center {

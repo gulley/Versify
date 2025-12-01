@@ -8,38 +8,102 @@ body {
 
 /* Page Content Container */
 .page-content {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 16px;
+    padding: var(--spacing-2xl);
 }
 
 /* Material Design Lite Overrides */
+.mdl-layout__header {
+    background-color: var(--color-bg-white) !important;
+    box-shadow: none !important;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.mdl-layout__header-row {
+    padding: 0 var(--spacing-2xl);
+}
+
+.mdl-layout-title {
+    color: var(--color-text-primary) !important;
+    font-size: 2rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.5px;
+}
+
 .mdl-layout__header-row .mdl-button {
-    color: white;
+    color: var(--color-text-primary) !important;
     margin-left: 8px;
+}
+
+.mdl-button--icon {
+    color: var(--color-text-secondary) !important;
+}
+
+.mdl-button--icon:hover {
+    background-color: var(--color-primary-light) !important;
+}
+
+.mdl-button--raised.mdl-button--primary {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    box-shadow: none !important;
+    border-radius: var(--radius-md) !important;
+}
+
+.mdl-button--raised.mdl-button--primary:hover {
+    background-color: var(--color-primary-hover) !important;
+}
+
+.mdl-button--raised.mdl-button--primary .material-icons {
+    color: white !important;
+}
+
+.mdl-button--raised {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    box-shadow: none !important;
+    border-radius: var(--radius-md) !important;
+}
+
+.mdl-button--raised:hover {
+    background-color: var(--color-primary-hover) !important;
+}
+
+.mdl-button--primary {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+.mdl-button--primary:hover {
+    background-color: var(--color-primary-hover) !important;
 }
 
 .mdl-card {
     width: 100%;
     min-height: 0;
     margin-bottom: 16px;
+    box-shadow: none !important;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
 }
 
 .mdl-card__title {
-    padding: 16px;
+    padding: var(--spacing-xl);
     border-bottom: 1px solid var(--color-border);
 }
 
 .mdl-card__title-text {
-    font-size: 24px;
-    color: var(--color-text-light);
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    font-weight: 600;
 }
 
 .mdl-card__supporting-text {
     width: 100%;
     box-sizing: border-box;
-    padding: 16px;
-    color: var(--color-text-light);
+    padding: var(--spacing-xl);
+    color: var(--color-text-primary);
 }
 
 .mdl-textfield__input {
@@ -66,22 +130,23 @@ body {
     position: relative;
     font-family: var(--font-family-mono);
     white-space: pre;
-    min-height: 100px;
-    font-size: var(--font-size-base);
+    min-height: 200px;
+    font-size: 1.1rem;
+    line-height: 1.8;
     overflow-x: auto;
     outline: none;
     cursor: text;
-    padding: 16px;
+    padding: var(--spacing-2xl);
     background-color: var(--color-bg-white);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    margin-top: 16px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-lg);
     transition: all var(--transition-fast);
 }
 
 .display-area:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-primary-shadow);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
     background-color: var(--color-bg-white);
 }
 
