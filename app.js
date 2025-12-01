@@ -101,14 +101,30 @@ Nothing gold can stay.`;
     async loadPoem(poemFile) {
         try {
             const response = await fetch(`poems/${poemFile}`);
+
+            if (!response.ok) {
+                throw new Error(`Failed to load poem: ${response.status} ${response.statusText}`);
+            }
+
             const text = await response.text();
-            let lines = text.split('\n');
-            this.titleElement.textContent = lines.shift() || '';
-            this.authorElement.textContent = lines.shift() || '';
-            this.fullText = lines.join('\n').trim();
+
+            // Use centralized parser
+            const poem = PoemParser.parse(text, poemFile);
+
+            this.titleElement.textContent = poem.title;
+            this.authorElement.textContent = poem.author;
+            this.fullText = poem.fullText;
             this.resetState();
         } catch (error) {
             console.error('Error loading poem:', error);
+            // Show error to user
+            this.titleElement.textContent = 'Error Loading Poem';
+            this.authorElement.textContent = `Could not load: ${poemFile}`;
+            this.displayArea.innerHTML = `<div style="color: red; padding: 20px;">
+                <p><strong>Error:</strong> ${error.message}</p>
+                <p>Please return to the poem list and try another poem.</p>
+            </div>`;
+            this.setBackgroundColor("#ffebee");
         }
     }
 

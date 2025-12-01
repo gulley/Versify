@@ -99,40 +99,26 @@ class PoemList {
         try {
             const response = await fetch(`poems/${filename}`);
             const text = await response.text();
-            const lines = text.split('\n');
 
-            // Parse poem format: Title, Author, blank line, then content
-            const title = lines[0]?.trim() || filename.replace('.txt', '');
-            const author = lines[1]?.trim() || 'Unknown Author';
-
-            // Get first few lines for preview (skip title, author, and blank line)
-            const contentLines = lines.slice(3).filter(line => line.trim() !== '');
-            const preview = contentLines.slice(0, 3).join('\n');
-
-            // Calculate length
-            const fullText = lines.slice(3).join('\n').trim();
-            const lineCount = contentLines.length;
-            const charCount = fullText.length;
+            // Use centralized parser
+            const poem = PoemParser.parse(text, filename);
 
             // Get last practiced time from localStorage
             const lastPracticed = this.getLastPracticed(filename);
 
             return {
-                filename,
-                title,
-                author,
-                preview,
-                lineCount,
-                charCount,
+                ...poem,
                 lastPracticed
             };
         } catch (error) {
             console.error(`Error loading poem ${filename}:`, error);
+            // Return fallback poem object
             return {
                 filename,
-                title: filename.replace('.txt', ''),
-                author: 'Unknown',
+                title: PoemParser.getFallbackTitle(filename),
+                author: 'Unknown Author',
                 preview: '',
+                fullText: '',
                 lineCount: 0,
                 charCount: 0,
                 lastPracticed: null
@@ -255,7 +241,9 @@ class PoemList {
 
         // Add click handlers
         poems.forEach(poem => {
-            const card = document.querySelector(`[data-poem-filename="${this.escapeAttribute(poem.filename)}"]`);
+            // Use CSS.escape for proper selector escaping
+            const escapedFilename = CSS.escape(poem.filename);
+            const card = document.querySelector(`[data-poem-filename="${escapedFilename}"]`);
             if (card) {
                 card.addEventListener('click', () => this.openPoemPractice(poem));
 
