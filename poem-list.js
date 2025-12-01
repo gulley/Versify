@@ -127,12 +127,7 @@ class PoemList {
     }
 
     getLastPracticed(filename) {
-        try {
-            const data = localStorage.getItem(`versify_practiced_${filename}`);
-            return data ? parseInt(data, 10) : null;
-        } catch (error) {
-            return null;
-        }
+        return StorageService.getLastPracticed(filename);
     }
 
     handleSearch(searchTerm) {
@@ -279,12 +274,8 @@ class PoemList {
     }
 
     openPoemPractice(poem) {
-        // Update last practiced timestamp
-        try {
-            localStorage.setItem(`versify_practiced_${poem.filename}`, Date.now().toString());
-        } catch (error) {
-            console.error('Error saving practice timestamp:', error);
-        }
+        // Update last practiced timestamp using StorageService
+        StorageService.setLastPracticed(poem.filename);
 
         // Navigate to practice page with poem filename as query parameter
         window.location.href = `practice.html?poem=${encodeURIComponent(poem.filename)}`;
