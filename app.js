@@ -3,7 +3,7 @@ class TextMemorizationApp {
         this.displayArea = document.getElementById('displayArea');
         this.hiddenInput = document.getElementById('hiddenInput');
         this.resetButton = document.getElementById('resetButton');
-        this.poemSelector = document.getElementById('poemSelector');
+        this.backButton = document.getElementById('backButton');
         this.titleElement = document.getElementById('title');
         this.authorElement = document.getElementById('author');
         this.body = document.body;
@@ -11,18 +11,19 @@ class TextMemorizationApp {
         this.titleElement.textContent = "Nothing Gold Can Stay";
         this.authorElement.textContent = "by Robert Frost";
         this.fullText = `Nature's first green is gold,
-Her hardest hue to hold. 
-Her early leaf's a flower; 
-But only so an hour. 
-Then leaf subsides to leaf. 
-So Eden sank to grief, 
-So dawn goes down to day. 
+Her hardest hue to hold.
+Her early leaf's a flower;
+But only so an hour.
+Then leaf subsides to leaf.
+So Eden sank to grief,
+So dawn goes down to day.
 Nothing gold can stay.`;
 
         this.currentIndex = 0;
         this.isHinting = false;
         this.setupEventListeners();
         this.loadPoemList();
+        this.checkUrlParameter();
         this.updateDisplay();
     }
 
@@ -38,7 +39,7 @@ Nothing gold can stay.`;
         });
 
         this.resetButton.addEventListener('click', () => this.resetState());
-        this.poemSelector.addEventListener('change', (e) => this.loadPoem(e.target.value));
+        this.backButton.addEventListener('click', () => this.goBackToList());
 
         this.displayArea.focus();
         this.displayArea.addEventListener('keydown', (e) => {
@@ -85,22 +86,16 @@ Nothing gold can stay.`;
             if (e.key === ' ' && (document.activeElement.tagName === 'BUTTON' || document.activeElement.classList.contains('mdl-button'))) {
                 e.preventDefault();
             }
+            // ESC key to go back to poem list
+            if (e.key === 'Escape') {
+                this.goBackToList();
+            }
         });
     }
 
     async loadPoemList() {
-        try {
-            const response = await fetch('poems/list.json');
-            const poems = await response.json();
-            poems.forEach(poem => {
-                const option = document.createElement('option');
-                option.value = poem;
-                option.textContent = poem.replace('.txt', '');
-                this.poemSelector.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Error loading poem list:', error);
-        }
+        // Poem list loading removed - poems are now selected from index.html
+        // This method kept for compatibility but does nothing
     }
 
     async loadPoem(poemFile) {
@@ -219,6 +214,21 @@ Nothing gold can stay.`;
     setBackgroundColor(color) {
         document.body.style.transition = "background-color 1s ease-in-out";
         document.body.style.backgroundColor = color;
+    }
+
+    checkUrlParameter() {
+        // Check if a poem is specified in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const poemFile = urlParams.get('poem');
+
+        if (poemFile) {
+            // Auto-load the specified poem
+            this.loadPoem(poemFile);
+        }
+    }
+
+    goBackToList() {
+        window.location.href = 'index.html';
     }
 }
 
