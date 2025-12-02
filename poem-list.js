@@ -196,6 +196,14 @@ class PoemList {
                 });
                 break;
 
+            case 'length-asc':
+                sorted.sort((a, b) => a.lineCount - b.lineCount);
+                break;
+
+            case 'length-desc':
+                sorted.sort((a, b) => b.lineCount - a.lineCount);
+                break;
+
             case 'recent':
                 sorted.sort((a, b) => {
                     const timeA = a.lastPracticed || 0;
