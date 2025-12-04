@@ -3,9 +3,10 @@ class PoemList {
     constructor() {
         this.poems = [];
         this.filteredPoems = [];
-        this.currentSort = 'alpha-asc';
+        this.currentSort = StorageService.getSetting('sortPreference', 'alpha-asc');
         this.searchTerm = '';
         this.initializeElements();
+        this.restoreSortPreference();
         this.bindEvents();
         this.loadPoems();
     }
@@ -20,6 +21,11 @@ class PoemList {
         this.sortSelect = document.getElementById('sort-select');
         this.loadingIndicator = document.getElementById('loading-indicator');
         this.errorMessage = document.getElementById('error-message');
+    }
+
+    restoreSortPreference() {
+        // Set the dropdown to match the saved preference
+        this.sortSelect.value = this.currentSort;
     }
 
     bindEvents() {
@@ -45,6 +51,7 @@ class PoemList {
         // Sort dropdown
         this.sortSelect.addEventListener('change', (e) => {
             this.currentSort = e.target.value;
+            StorageService.setSetting('sortPreference', this.currentSort);
             this.filterAndRenderPoems();
         });
 

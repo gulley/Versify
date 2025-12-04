@@ -251,6 +251,27 @@ class StorageService {
     }
 
     /**
+     * Get a user preference setting
+     * @param {string} settingName - The name of the setting
+     * @param {*} defaultValue - Default value if setting doesn't exist
+     * @returns {*} The setting value or default value
+     */
+    static getSetting(settingName, defaultValue = null) {
+        const value = this.get(this.KEYS.SETTINGS, settingName);
+        return value !== null ? value : defaultValue;
+    }
+
+    /**
+     * Set a user preference setting
+     * @param {string} settingName - The name of the setting
+     * @param {string} value - The value to store
+     * @returns {boolean} True if successful
+     */
+    static setSetting(settingName, value) {
+        return this.set(this.KEYS.SETTINGS, value, settingName);
+    }
+
+    /**
      * Get storage statistics
      * @returns {Object} Statistics about storage usage
      */
