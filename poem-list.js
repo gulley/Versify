@@ -209,19 +209,11 @@ class PoemList {
                 break;
 
             case 'author-asc':
-                sorted.sort((a, b) => {
-                    const lastNameA = this.getLastName(a.author);
-                    const lastNameB = this.getLastName(b.author);
-                    return lastNameA.localeCompare(lastNameB);
-                });
+                sorted.sort((a, b) => this.compareByAuthor(a, b, 1));
                 break;
 
             case 'author-desc':
-                sorted.sort((a, b) => {
-                    const lastNameA = this.getLastName(a.author);
-                    const lastNameB = this.getLastName(b.author);
-                    return lastNameB.localeCompare(lastNameA);
-                });
+                sorted.sort((a, b) => this.compareByAuthor(a, b, -1));
                 break;
 
             case 'length-asc':
@@ -325,13 +317,32 @@ class PoemList {
         window.location.href = `practice.html?poem=${encodeURIComponent(poem.filename)}`;
     }
 
+    compareByAuthor(a, b, direction) {
+        // Sort by last name; sources that aren't a "by ..." author
+        // (e.g. "King James Version") go after all named authors
+        const lastNameA = this.getLastName(a.author);
+        const lastNameB = this.getLastName(b.author);
+
+        if (lastNameA === null || lastNameB === null) {
+            if (lastNameA !== lastNameB) {
+                return lastNameA === null ? 1 : -1;
+            }
+            return a.author.localeCompare(b.author) || a.title.localeCompare(b.title);
+        }
+
+        return direction * lastNameA.localeCompare(lastNameB) || a.title.localeCompare(b.title);
+    }
+
     getLastName(author) {
-        // Extract last name from author string
-        // Handles formats like "by Robert Frost", "Robert Frost", "Unknown Author"
-        const cleaned = author.replace(/^by\s+/i, '').trim();
+        // Extract last name from "by First Last" attributions
+        // Returns null for attributions that don't name an author
+        const match = author.trim().match(/^by\s+(.+)$/i);
+        if (!match) {
+            return null;
+        }
 
         // Split by spaces and get the last word
-        const parts = cleaned.split(/\s+/);
+        const parts = match[1].trim().split(/\s+/);
         return parts[parts.length - 1].toLowerCase();
     }
 
