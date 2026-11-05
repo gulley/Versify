@@ -23,6 +23,7 @@ Nothing gold can stay.`;
         this.loadPoemList();
         this.checkUrlParameter();
         this.updateDisplay();
+        this.voice = new VoiceRecitation(this);
     }
 
     setupEventListeners() {

@@ -147,6 +147,50 @@ body {
     margin-bottom: 16px;
 }
 
+/* Voice Recitation */
+.mic-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-round);
+    background-color: var(--color-bg-white);
+    color: var(--color-text-secondary);
+    fill: currentColor;
+    cursor: pointer;
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mic-btn:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-primary);
+}
+
+.mic-btn.active {
+    color: var(--color-bg-white);
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    animation: mic-pulse 1.5s ease-in-out infinite;
+}
+
+.mic-btn.hidden {
+    display: none;
+}
+
+@keyframes mic-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(231, 76, 60, 0); }
+}
+
+.voice-status {
+    min-height: 1.2em;
+    font-size: var(--font-size-small);
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
 .hint-text {
     font-size: var(--font-size-small);
     color: var(--color-text-muted);
