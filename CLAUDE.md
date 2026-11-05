@@ -56,7 +56,7 @@ The application is divided into two main pages:
   - Three display modes: dots (·), full text preview, or hidden
   - Hint system with Shift+Space to reveal next character
   - Click-to-jump functionality on dots
-  - Background color changes to indicate completion (gray → green)
+  - Background color changes to indicate completion (gray → dark blue, via `is-complete` class)
   - URL parameter support for direct poem loading
   - ESC key to reset current poem
   - Monospace font for typing area
@@ -93,7 +93,7 @@ Poem content line 2
 - Accent: Warm orange (`#e67e22`) - highlights and emphasis
 - Background: Light gray (`#f8f9fa`) - consistent across both pages
 - Text: Graduated grays for visual hierarchy
-- Completion: Green (`#27ae60`)
+- Completion: Dark blue (`#14335e`, `--color-bg-complete`)
 
 **Typography:**
 - Base: Roboto sans-serif for UI elements

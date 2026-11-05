@@ -64,13 +64,13 @@ class TextMemorizationApp {
         });
 
         document.querySelector('.page-content').addEventListener('click', (e) => {
-            if (!['BUTTON', 'INPUT'].includes(e.target.tagName) && !e.target.classList.contains('mdl-checkbox__label')) {
+            if (!e.target.closest('button, input, a')) {
                 this.displayArea.focus();
             }
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === ' ' && (document.activeElement.tagName === 'BUTTON' || document.activeElement.classList.contains('mdl-button'))) {
+            if (e.key === ' ' && document.activeElement.tagName === 'BUTTON') {
                 e.preventDefault();
             }
             // ESC key to reset
@@ -107,11 +107,11 @@ class TextMemorizationApp {
             // Show error to user
             this.titleElement.textContent = 'Error Loading Poem';
             this.authorElement.textContent = `Could not load: ${poemFile}`;
-            this.displayArea.innerHTML = `<div style="color: red; padding: 20px;">
-                <p><strong>Error:</strong> ${error.message}</p>
+            this.displayArea.innerHTML = `<div class="load-error">
+                <p><strong>Error:</strong> ${this.escapeHtml(error.message)}</p>
                 <p>Please return to the poem list and try another poem.</p>
             </div>`;
-            this.setBackgroundColor("#ffebee");
+            this.setPageState('has-error');
         }
     }
 
@@ -157,7 +157,7 @@ class TextMemorizationApp {
         this.displayArea.appendChild(hiddenSpan);
 
         if (this.fullText && this.currentIndex >= this.fullText.length) {
-            this.setBackgroundColor("#14335e");
+            this.setPageState('is-complete');
         }
     }
 
@@ -228,14 +228,17 @@ class TextMemorizationApp {
     resetState() {
         this.currentIndex = 0;
         this.skipUntypable();
+        this.setPageState('');
         this.updateDisplay();
-        this.setBackgroundColor("#f8f9fa");
         this.displayArea.focus();
     }
 
-    setBackgroundColor(color) {
-        document.body.style.transition = "background-color 1s ease-in-out";
-        document.body.style.backgroundColor = color;
+    // Page background reflects state; colors live in practice.css
+    setPageState(state) {
+        document.body.classList.remove('is-complete', 'has-error');
+        if (state) {
+            document.body.classList.add(state);
+        }
     }
 
     checkUrlParameter() {

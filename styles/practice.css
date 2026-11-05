@@ -13,130 +13,76 @@ body {
     padding: var(--spacing-2xl);
 }
 
-/* Material Design Lite Overrides */
-.mdl-layout__header {
-    background-color: var(--color-bg-white) !important;
-    box-shadow: none !important;
-    border-bottom: 2px solid var(--color-border);
-    height: auto !important;
-    min-height: 64px;
+/* Page States */
+body.is-complete {
+    background-color: var(--color-bg-complete);
 }
 
-.mdl-layout__header-row {
-    padding: var(--spacing-xl) var(--spacing-2xl);
-    height: auto !important;
+body.has-error {
+    background-color: var(--color-bg-error);
 }
 
-.mdl-layout-title {
-    color: var(--color-text-primary) !important;
-    font-size: 2rem !important;
-    font-weight: 600 !important;
-    letter-spacing: -0.5px !important;
-    line-height: 1 !important;
-}
-
-.mdl-layout__header-row .mdl-button {
-    margin-left: var(--spacing-sm);
-}
-
-.mdl-button--icon {
-    color: var(--color-text-secondary) !important;
-    background-color: transparent !important;
-}
-
-.mdl-button--icon:hover {
-    background-color: var(--color-primary-light) !important;
-    color: var(--color-text-primary) !important;
-}
-
-.mdl-button--icon .material-icons {
+/* Back Link */
+.back-link {
+    display: inline-block;
+    margin-bottom: var(--spacing-lg);
     color: var(--color-text-secondary);
+    font-size: var(--font-size-medium);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: color var(--transition-fast);
 }
 
-.mdl-button--icon:hover .material-icons {
+.back-link:hover {
     color: var(--color-text-primary);
 }
 
-.mdl-button--raised.mdl-button--primary {
-    background-color: var(--color-primary) !important;
-    color: white !important;
-    box-shadow: none !important;
-    border-radius: var(--radius-md) !important;
-    text-transform: none !important;
-    font-weight: 500 !important;
-    padding: var(--spacing-sm) var(--spacing-lg) !important;
+body.is-complete .back-link {
+    color: rgba(255, 255, 255, 0.8);
 }
 
-.mdl-button--raised.mdl-button--primary:hover {
-    background-color: var(--color-primary-hover) !important;
-    box-shadow: none !important;
+body.is-complete .back-link:hover {
+    color: var(--color-bg-white);
 }
 
-.mdl-button--raised.mdl-button--primary .material-icons {
-    color: white !important;
-}
-
-.mdl-button--raised {
-    background-color: var(--color-primary) !important;
-    color: white !important;
-    box-shadow: none !important;
-    border-radius: var(--radius-md) !important;
-}
-
-.mdl-button--raised:hover {
-    background-color: var(--color-primary-hover) !important;
-    box-shadow: none !important;
-}
-
-.mdl-button--primary {
-    background-color: var(--color-primary) !important;
-    color: white !important;
-}
-
-.mdl-button--primary:hover {
-    background-color: var(--color-primary-hover) !important;
-}
-
-.mdl-card {
-    width: 100%;
-    min-height: 0;
-    margin-bottom: var(--spacing-xl);
-    box-shadow: var(--shadow-sm) !important;
+/* Practice Card */
+.practice-card {
+    background-color: var(--color-bg-white);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
+    margin-bottom: var(--spacing-xl);
 }
 
-.mdl-card__title {
+.practice-card-header {
     padding: var(--spacing-xl);
     border-bottom: 1px solid var(--color-border);
-    background-color: var(--color-bg-white);
 }
 
-.mdl-card__title-text {
+.poem-heading {
     font-size: 1.5rem;
-    color: var(--color-text-primary) !important;
-    font-weight: 600 !important;
-    margin: 0 !important;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
 }
 
-.mdl-typography--subhead {
-    color: var(--color-text-secondary) !important;
-    font-size: var(--font-size-medium) !important;
+.poem-byline {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-medium);
     font-style: italic;
+    color: var(--color-text-secondary);
 }
 
-.mdl-card__supporting-text {
-    width: 100%;
-    box-sizing: border-box;
+.practice-card-body {
     padding: var(--spacing-xl);
-    color: var(--color-text-primary) !important;
-    background-color: var(--color-bg-white);
+    color: var(--color-text-primary);
 }
 
-.mdl-textfield__input {
-    color: var(--color-text-primary) !important;
-    background-color: var(--color-bg-white) !important;
+.load-error {
+    padding: var(--spacing-xl);
+    color: var(--color-error);
+    font-family: var(--font-family-base);
+    white-space: normal;
 }
 
 /* Controls Section */
@@ -256,4 +202,35 @@ body {
 .metadata {
     color: var(--color-text-muted);
     margin: 8px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .page-content {
+        padding: var(--spacing-lg);
+    }
+
+    .practice-card-header,
+    .practice-card-body {
+        padding: var(--spacing-lg);
+    }
+
+    .controls-section {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+
+    .mic-btn {
+        flex-shrink: 0;
+    }
+
+    /* Shift-Space hints need a physical keyboard */
+    .hint-text {
+        display: none;
+    }
+
+    .display-area {
+        padding: var(--spacing-lg);
+        font-size: 1rem;
+    }
 }
