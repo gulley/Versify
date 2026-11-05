@@ -6,17 +6,7 @@ class TextMemorizationApp {
         this.authorElement = document.getElementById('author');
         this.body = document.body;
 
-        this.titleElement.textContent = "Nothing Gold Can Stay";
-        this.authorElement.textContent = "by Robert Frost";
-        this.fullText = `Nature's first green is gold,
-Her hardest hue to hold.
-Her early leaf's a flower;
-But only so an hour.
-Then leaf subsides to leaf.
-So Eden sank to grief,
-So dawn goes down to day.
-Nothing gold can stay.`;
-
+        this.fullText = '';
         this.currentIndex = 0;
         this.isHinting = false;
         this.setupEventListeners();
@@ -150,7 +140,7 @@ Nothing gold can stay.`;
 
         const nextCharSpan = document.createElement('span');
         nextCharSpan.className = 'next-char';
-        nextCharSpan.textContent = this.isHinting || !/[a-zA-Z]/.test(nextChar) ? nextChar : '·';
+        nextCharSpan.textContent = this.isHinting || !/\p{L}/u.test(nextChar) ? nextChar : '·';
         this.displayArea.appendChild(nextCharSpan);
 
         const hiddenSpan = document.createElement('span');
@@ -166,7 +156,7 @@ Nothing gold can stay.`;
 
         this.displayArea.appendChild(hiddenSpan);
 
-        if (this.currentIndex >= this.fullText.length) {
+        if (this.fullText && this.currentIndex >= this.fullText.length) {
             this.setBackgroundColor("#14335e");
         }
     }
@@ -176,7 +166,7 @@ Nothing gold can stay.`;
         let index = this.currentIndex + 1;
         
         for (const char of text) {
-            if (/[a-zA-Z]/.test(char)) {
+            if (/\p{L}/u.test(char)) {
                 result += `<span class="hidden-dot" data-index="${index}">·</span>`;
             } else {
                 result += this.escapeHtml(char);
@@ -203,8 +193,9 @@ Nothing gold can stay.`;
                 }
             }
         } else if (e.key.length === 1) {
-            if (!/\s/.test(nextChar) && e.key.toLowerCase() === nextChar.toLowerCase()) {
+            if (!/\s/.test(nextChar) && this.baseChar(e.key) === this.baseChar(nextChar)) {
                 this.currentIndex++;
+                this.skipUntypable();
                 const nextNextChar = this.fullText.charAt(this.currentIndex);
                 const followingChar = this.fullText.charAt(this.currentIndex + 1);
                 if (nextNextChar === "\n") {
@@ -214,11 +205,29 @@ Nothing gold can stay.`;
                 }
             }
         }
+        this.skipUntypable();
         this.updateDisplay();
+    }
+
+    // Lowercase and strip accents so "e" matches "è"
+    baseChar(char) {
+        return char.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    }
+
+    // Skip characters a standard keyboard can't type, such as em dashes
+    skipUntypable() {
+        while (this.currentIndex < this.fullText.length) {
+            const char = this.fullText.charAt(this.currentIndex);
+            if (/\s/.test(char) || /^[\x21-\x7E]$/.test(this.baseChar(char))) {
+                break;
+            }
+            this.currentIndex++;
+        }
     }
 
     resetState() {
         this.currentIndex = 0;
+        this.skipUntypable();
         this.updateDisplay();
         this.setBackgroundColor("#f8f9fa");
         this.displayArea.focus();
@@ -232,12 +241,9 @@ Nothing gold can stay.`;
     checkUrlParameter() {
         // Check if a poem is specified in the URL
         const urlParams = new URLSearchParams(window.location.search);
-        const poemFile = urlParams.get('poem');
-
-        if (poemFile) {
-            // Auto-load the specified poem
-            this.loadPoem(poemFile);
-        }
+        // Load the specified poem, or a short default when none is given
+        const poemFile = urlParams.get('poem') || 'Nothing Gold Can Stay.txt';
+        this.loadPoem(poemFile);
     }
 
 }

@@ -19,7 +19,7 @@ class PoemParser {
             throw new Error('Invalid poem text: must be a non-empty string');
         }
 
-        const lines = text.split('\n');
+        const lines = this.splitLines(text);
 
         // Extract title (line 1)
         const title = lines[0]?.trim() || this.getFallbackTitle(filename);
@@ -53,6 +53,15 @@ class PoemParser {
     }
 
     /**
+     * Split text into lines, accepting Windows (CRLF) or Unix (LF) line endings
+     * @param {string} text - The raw text content
+     * @returns {string[]} Lines without line-ending characters
+     */
+    static splitLines(text) {
+        return text.split(/\r\n?|\n/);
+    }
+
+    /**
      * Get fallback title from filename
      * @param {string} filename - The poem filename
      * @returns {string} Cleaned title
@@ -75,7 +84,7 @@ class PoemParser {
             return { isValid: false, errors };
         }
 
-        const lines = text.split('\n');
+        const lines = this.splitLines(text);
 
         if (lines.length < 4) {
             errors.push('Poem must have at least 4 lines (title, author, blank, content)');
