@@ -4,9 +4,11 @@ class PoemList {
         this.poems = [];
         this.filteredPoems = [];
         this.currentSort = StorageService.getSetting('sortPreference', 'alpha-asc');
+        this.currentView = StorageService.getSetting('viewPreference', 'grid');
         this.searchTerm = '';
         this.initializeElements();
         this.restoreSortPreference();
+        this.applyView(this.currentView);
         this.bindEvents();
         this.loadPoems();
     }
@@ -21,11 +23,22 @@ class PoemList {
         this.sortSelect = document.getElementById('sort-select');
         this.loadingIndicator = document.getElementById('loading-indicator');
         this.errorMessage = document.getElementById('error-message');
+        this.viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
     }
 
     restoreSortPreference() {
         // Set the dropdown to match the saved preference
         this.sortSelect.value = this.currentSort;
+    }
+
+    applyView(view) {
+        this.currentView = view === 'list' ? 'list' : 'grid';
+        this.poemsGrid.classList.toggle('list-view', this.currentView === 'list');
+        this.viewToggleBtns.forEach(btn => {
+            const isActive = btn.dataset.view === this.currentView;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-pressed', isActive);
+        });
     }
 
     bindEvents() {
@@ -53,6 +66,14 @@ class PoemList {
             this.currentSort = e.target.value;
             StorageService.setSetting('sortPreference', this.currentSort);
             this.filterAndRenderPoems();
+        });
+
+        // Grid/List view toggle
+        this.viewToggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.applyView(btn.dataset.view);
+                StorageService.setSetting('viewPreference', this.currentView);
+            });
         });
 
         // Ctrl+F or Cmd+F to focus search

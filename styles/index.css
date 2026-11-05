@@ -99,6 +99,72 @@ body {
     color: var(--color-primary);
 }
 
+/* List View */
+.poems-grid.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background-color: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+}
+
+.list-view .poem-card {
+    height: auto;
+    border: none;
+    border-bottom: 1px solid var(--color-border-light);
+    border-radius: 0;
+}
+
+.list-view .poem-card:last-child {
+    border-bottom: none;
+}
+
+.list-view .poem-card:hover {
+    background-color: var(--color-primary-light);
+}
+
+.list-view .poem-card:focus-visible {
+    outline-offset: -2px;
+    transform: none;
+    box-shadow: none;
+}
+
+.list-view .poem-info {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr) 6rem;
+    align-items: baseline;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-xl);
+}
+
+.list-view .poem-title {
+    font-size: var(--font-size-base);
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-view .poem-author {
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-view .poem-preview {
+    display: none;
+}
+
+.list-view .poem-metadata {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    justify-content: flex-end;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header {
@@ -122,5 +188,25 @@ body {
 
     .main-content {
         padding: var(--spacing-lg);
+    }
+
+    .view-toggle {
+        align-self: center;
+    }
+
+    .list-view .poem-info {
+        grid-template-columns: minmax(0, 1fr) auto;
+        row-gap: var(--spacing-xs);
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .list-view .poem-author {
+        grid-row: 2;
+    }
+
+    .list-view .poem-metadata {
+        grid-row: 1 / span 2;
+        grid-column: 2;
+        align-self: center;
     }
 }

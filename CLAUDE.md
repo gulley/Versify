@@ -42,7 +42,7 @@ The application is divided into two main pages:
 #### Poem Selection Page (`index.html`)
 - **`poem-list.js`**: Handles poem loading, search, filtering, and sorting
 - Features:
-  - Clean, minimal card-based grid layout
+  - Clean, minimal card-based grid layout, with a compact List view toggle (title / author / lines per row; choice saved as `viewPreference`)
   - Real-time search across title, author, and poem content (use `/` to focus)
   - Sort options: A→Z, Z→A, by author (last name), recently practiced, random
   - Responsive grid layout (280px minimum card width)
